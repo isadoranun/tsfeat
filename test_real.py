@@ -22,14 +22,14 @@ preproccesed_data = Preprocess_LC(data2, mjd2, error2)
 
 
 if len(data) != len(second_data):
-	[aligned_data, aligned_second_data, aligned_mjd] = Align_LC(mjd, mjd2, data, second_data, error, error2)
+	[aligned_data, aligned_second_data] = Align_LC(mjd, mjd2, data, second_data, error, error2)
 
 
 #Calculating the features
-a = FeatureSpace(featureList=['PeriodLS','Psi_CS','Psi_eta'], automean=[0,0], StetsonL=[aligned_second_data, aligned_data] ,  B_R=second_data, Beyond1Std=error, StetsonJ=[aligned_second_data, aligned_data], MaxSlope=mjd, LinearTrend=mjd, Eta_B_R=[aligned_second_data, aligned_data, aligned_mjd], Eta_e=mjd, Q31B_R=[aligned_second_data, aligned_data], PeriodLS=mjd, Psi_CS = mjd, CAR_sigma=[mjd, error], SlottedA = mjd)
+a = FeatureSpace(featureList=['StetsonL', 'StetsonJ', 'Q31B_R', 'Eta_B_R'], automean=[0,0], StetsonL=[aligned_second_data, aligned_data] ,  B_R=second_data, Beyond1Std=error, StetsonJ=[aligned_second_data, aligned_data], MaxSlope=mjd, LinearTrend=mjd, Eta_B_R=[aligned_second_data, aligned_data], Eta_e=mjd, Q31B_R=[aligned_second_data, aligned_data], PeriodLS=mjd, CAR_sigma=[mjd, error], SlottedA = mjd)
 a=a.calculateFeature(data)
 
-print a.result(method='dict')
+print a.result(method='features')
 
 # nombres = a.result(method='features')
 # guardar = np.vstack((nombres,a.result(method='array')))
