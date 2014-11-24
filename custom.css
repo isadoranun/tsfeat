@@ -65,14 +65,17 @@ div.text_cell_render{
     font-size: 40pt;
     line-height: 100%;
     color: black;
-    margin-bottom: 0.1em;
-    margin-top: 0.1em;
+    /*margin-bottom: 0.1em;*/
+    /*margin-top: 0.1em;*/
     text-align: center;
     display: block;
     background-color:  #ADD8E6; 
     border-radius: 10px; /* rounded borders */
     padding: 1em;
     margin-top: 1em;
+    margin-left:-0.35em;
+    margin-right:-1.8em;*/
+
 }
 
 .text_cell_render h2 {
@@ -81,13 +84,15 @@ div.text_cell_render{
     font-size: 24pt;
     line-height: 100%;
     color: black;
-    margin-bottom: 0.1em;
-    margin-top: 0.1em;
+    /*margin-bottom: 0.1em;*/
+    /*margin-top: 0.1em;*/
     display: block;
     background-color:   #ACC4E6; 
     border-radius: 10px; /* rounded borders */
     padding: 1em;
     margin-top: 1em;
+    margin-left:-0.35em;
+    margin-right:-3em;
 }    
 
 .text_cell_render h3 {

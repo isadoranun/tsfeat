@@ -1,11 +1,16 @@
 // adapted from https://gist.github.com/magican/5574556
 
-function clone_anchor(thetext, link) {
+function clone_anchor(element) {
   // clone link
-  var $new_a = $("<a>");
-  $new_a.attr("href", link);
-  $new_a.text(thetext);
-  return $new_a;
+  var h = element.find("div.text_cell_render").find(':header').first();
+  var a = h.find('a').clone();
+  var new_a = $("<a>");
+  new_a.attr("href", a.attr("href"));
+  // get the text *excluding* the link text, whatever it may be
+  var hclone = h.clone();
+  hclone.children().remove();
+  new_a.text(hclone.text());
+  return new_a;
 }
 
 function ol_depth(element) {
@@ -18,53 +23,23 @@ function ol_depth(element) {
   return d;
 }
 
-function get_level($e){
-  var level=0;
-  if ($e.is("h1")){
-    level=1;
-  } else if ($e.is("h2")){
-    level=2;
-  } else if ($e.is("h3")){
-    level=3;
-  } else if ($e.is("h4")){
-    level=4;
-  } else if ($e.is("h5")){
-    level=5;
-  } else if ($e.is("h6")){
-    level=6;
-  }
-  else {
-    level=0;
-  }
-  return level
-}
-
 function table_of_contents(threshold) {
   if (threshold === undefined) {
-    threshold = 5;
+    threshold = 4;
   }
-  var cells=[];
-  $(':header').map(function(i,e){
-    var $e = $(e);
-    var thetext=$e.text();
-    var thelink = $e.find('a.anchor-link').attr("href");
-    thetext = thetext.substring(0,thetext.length - 1);
-    var level = get_level($e);
-    cells.push({"level":level,"thetext":thetext, "thelink":thelink})
-    //console.log(thelink, thetext,level);
-  });
-  console.log("LEVELS", cells);
+  var cells = IPython.notebook.get_cells();
+  
   var ol = $("<ol/>");
   $("#toc").empty().append(ol);
   
   for (var i=0; i < cells.length; i++) {
     var cell = cells[i];
     
+    if (cell.cell_type !== 'heading') continue;
     
     var level = cell.level;
     if (level > threshold) continue;
-    console.log("threshold", threshold, level);
-
+    
     var depth = ol_depth(ol);
 
     // walk down levels
@@ -79,7 +54,7 @@ function table_of_contents(threshold) {
     }
     //
     ol.append(
-      $("<li/>").append(clone_anchor(cell.thetext, cell.thelink))
+      $("<li/>").append(clone_anchor(cell.element))
     );
   }
 
@@ -98,9 +73,7 @@ function table_of_contents(threshold) {
     $('#toc').css({maxHeight: $(window).height() - 200})
   })
 
-  $(window).trigger('resize');
-  $('#toc-wrapper .header').trigger('click');
-
+  $(window).trigger('resize')
 }
 
 //table_of_contents();

@@ -2,9 +2,12 @@
 
 
 {% block codecell %}
+{% if cell.metadata.hide == True %}
+{% else %}
 <div class="cell border-box-sizing code_cell rendered">
 {{ super() }}
 </div>
+{% endif %}
 {%- endblock codecell %}
 
 {% block input_group -%}

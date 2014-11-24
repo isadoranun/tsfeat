@@ -874,10 +874,11 @@ class CAR_sigma(Base):
 
         return -loglik #the minus one is to perfor maximization using the minimize function
 
-    def calculateCAR(self, LC):
+    def calculateCAR(self, mjd, data, error):
         x0 = [10, 0.5]
         bnds = ((0, 100), (0, 100))
-        res = minimize(self.CAR_Lik, x0, args=(LC[:,0],LC[:,1],LC[:,2]) ,method='nelder-mead',bounds = bnds)
+        # res = minimize(self.CAR_Lik, x0, args=(LC[:,0],LC[:,1],LC[:,2]) ,method='nelder-mead',bounds = bnds)
+        res = minimize(self.CAR_Lik, x0, args=(mjd, data, error) ,method='nelder-mead',bounds = bnds)
         # options={'disp': True}
         sigma = res.x[0]
         CAR_sigma.tau = res.x[1] 
@@ -888,8 +889,8 @@ class CAR_sigma(Base):
 
 
     def fit(self, data):
-        LC = np.hstack((self.mjd , data.reshape((self.N,1)), self.error))
-        a = self.calculateCAR(LC)
+        # LC = np.hstack((self.mjd , data.reshape((self.N,1)), self.error))
+        a = self.calculateCAR(self.mjd , data.reshape((self.N,1)), self.error)
 
         return a
 

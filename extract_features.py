@@ -67,7 +67,7 @@ for j in os.listdir(path):
 	    					aligned_data = data
 	    					aligned_second_data = second_data
 	    					aligned_mjd = mjd
-	    				a = FeatureSpace(category= 'all',featureList=None, automean=[0,0], StetsonL=[aligned_second_data, aligned_data] , B_R=second_data, Beyond1Std=error, StetsonJ=[aligned_second_data, aligned_data], MaxSlope=mjd, LinearTrend=mjd, Eta_B_R=[aligned_second_data, aligned_data, aligned_mjd], Eta_e=mjd, Q31B_R=[aligned_second_data, aligned_data], CAR_sigma=[mjd, error], SlottedA = mjd)
+	    				a = FeatureSpace(category='all',featureList=None, automean=[0,0], StetsonL=[aligned_second_data, aligned_data] , B_R=second_data, Beyond1Std=error, StetsonJ=[aligned_second_data, aligned_data], MaxSlope=mjd, LinearTrend=mjd, Eta_B_R=[aligned_second_data, aligned_data, aligned_mjd], Eta_e=mjd, Q31B_R=[aligned_second_data, aligned_data], PeriodLS=mjd, Psi_CS =mjd, CAR_sigma=[mjd, error], SlottedA = mjd)
 
 	    				try:
 	    					a=a.calculateFeature(data)
@@ -81,10 +81,8 @@ for j in os.listdir(path):
 	    						df = pd.DataFrame(a.result(method='array').reshape((1,len(a.result(method='array')))), columns = a.result(method='features'), index =[idx])
 	    						print "hice mi primer data frame"	
 	    					else:
-	    						print "aqui"
 	    						df2 = pd.DataFrame(a.result(method='array').reshape((1,len(a.result(method='array')))), columns = a.result(method='features'), index =[idx])
 	    						df = pd.concat([df, df2])
-	    						print "hice mAS data frame"	
 
 	    				except:
 	    					pass
