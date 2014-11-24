@@ -54,7 +54,8 @@ def Align_LC(mjd, mjd2, data, data2, error, error2):
 				new_data2 = np.delete(new_data2,(index-count))
 				count = count + 1
 				
-		new_data = np.asarray(new_data).flatten()		
+		new_data = np.asarray(new_data).flatten()
+		new_mjd = np.asarray(new_mjd).flatten()		
 
-	return new_data, new_data2
+	return new_data, new_data2, new_mjd		
 	#return new_mjd, new_data, new_error, new_mjd2, new_data2, new_error2

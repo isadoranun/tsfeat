@@ -40,7 +40,7 @@ class FeatureSpace:
 
             else:
                 for name, obj in inspect.getmembers(featureFunction):
-                    if inspect.isclass(obj) and name!='Base':
+                    if inspect.isclass(obj) and name!='Base' :
                         if name in kwargs.keys():
                             if obj( kwargs[name]).category in self.category:
                                 self.featureList.append(name)

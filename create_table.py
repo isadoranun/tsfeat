@@ -23,6 +23,6 @@ def Table(a):
 
 	a = make_table(FeaturesList)
 	apply_theme('basic')
-	set_global_style(float_format='%0.3f')
+	set_global_style(float_format='%0.5f')
 
 	return a

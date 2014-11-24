@@ -82,7 +82,7 @@ def test_Beyond1Std(white_noise):
 	a = FeatureSpace(featureList=['Beyond1Std'] , Beyond1Std= white_noise[2])
 	a=a.calculateFeature(white_noise[0])
 
-	assert(a.result(method='array') >= 0.30 and a.result(method='array') <= 0.34)
+	assert(a.result(method='array') >= 0.30 and a.result(method='array') <= 0.40)
 
 def test_Bmean(white_noise):
 
@@ -132,8 +132,8 @@ def test_FluxPercentile(white_noise):
 
 	assert(a.result(method='array')[0] >= 0.145 and a.result(method='array')[0] <= 0.160)
 	assert(a.result(method='array')[1] >= 0.260 and a.result(method='array')[1] <= 0.290)
-	assert(a.result(method='array')[2] >= 0.390 and a.result(method='array')[2] <= 0.420)
-	assert(a.result(method='array')[3] >= 0.550 and a.result(method='array')[3] <= 0.580)
+	assert(a.result(method='array')[2] >= 0.350 and a.result(method='array')[2] <= 0.450)
+	assert(a.result(method='array')[3] >= 0.540 and a.result(method='array')[3] <= 0.580)
 	assert(a.result(method='array')[4] >= 0.760 and a.result(method='array')[4] <= 0.800)
 
 
@@ -168,7 +168,7 @@ def test_MedianAbsDev(white_noise):
 	a = FeatureSpace(featureList=['MedianAbsDev'])
 	a=a.calculateFeature(white_noise[0])
 
-	assert(a.result(method='array') >= 0.670 and a.result(method='array') <= 0.680)
+	assert(a.result(method='array') >= 0.650 and a.result(method='array') <= 0.690)
 
 # def test_MedianBRP(white_noise):
 # 	# data, mjd, error, second_data, aligned_data, aligned_second_data, aligned_mjd = white_noise()
@@ -210,11 +210,12 @@ def test_Period_Psi(periodic_lc):
 	# print a.result(method='array'), len(periodic_lc[0])
 	assert(a.result(method='array')[0] >= 19 and a.result(method='array')[0] <= 21)
 
-# def test_Q31(white_noise):
-# 	# data, mjd, error, second_data, aligned_data, aligned_second_data, aligned_mjd = white_noise()
+def test_Q31(white_noise):
+	# data, mjd, error, second_data, aligned_data, aligned_second_data, aligned_mjd = white_noise()
 
-# 	a = FeatureSpace(featureList=['Q31'])
-# 	a=a.calculateFeature(white_noise[0])
+	a = FeatureSpace(featureList=['Q31'])
+	a=a.calculateFeature(white_noise[0])
+	assert(a.result(method='array') >= 1.30 and a.result(method='array') <= 1.36)
 
 # def test_Q31B_R(white_noise):
 # 	# data, mjd, error, second_data, aligned_data, aligned_second_data, aligned_mjd = white_noise()
@@ -229,11 +230,13 @@ def test_Rcs(white_noise):
 	a=a.calculateFeature(white_noise[0])
 	assert(a.result(method='array') >= 0 and a.result(method='array') <= 0.1)
 
-# def test_Skew(white_noise):
-# 	# data, mjd, error, second_data, aligned_data, aligned_second_data, aligned_mjd = white_noise()
+def test_Skew(white_noise):
+	# data, mjd, error, second_data, aligned_data, aligned_second_data, aligned_mjd = white_noise()
 
-# 	a = FeatureSpace(featureList=['Skew'])
-# 	a=a.calculateFeature(white_noise[0])
+	a = FeatureSpace(featureList=['Skew'])
+	a=a.calculateFeature(white_noise[0])
+	assert(a.result(method='array') >= -0.1 and a.result(method='array') <= 0.1)
+
 
 # def test_SlottedA(white_noise):
 # 	# data, mjd, error, second_data, aligned_data, aligned_second_data, aligned_mjd = white_noise()
@@ -241,11 +244,13 @@ def test_Rcs(white_noise):
 # 	a = FeatureSpace(featureList=['SlottedA'], SlottedA = [mjd, 1])
 # 	a=a.calculateFeature(white_noise[0])
 
-# def test_SmallKurtosis(white_noise):
-# 	# data, mjd, error, second_data, aligned_data, aligned_second_data, aligned_mjd = white_noise()
+def test_SmallKurtosis(white_noise):
+	# data, mjd, error, second_data, aligned_data, aligned_second_data, aligned_mjd = white_noise()
 
-# 	a = FeatureSpace(featureList=['SmallKurtosis'])
-# 	a=a.calculateFeature(white_noise[0])
+	a = FeatureSpace(featureList=['SmallKurtosis'])
+	a=a.calculateFeature(white_noise[0])
+	assert(a.result(method='array') >= -0.1 and a.result(method='array') <= 0.1)
+
 
 def test_Std(white_noise):
 	# data, mjd, error, second_data, aligned_data, aligned_second_data, aligned_mjd = white_noise()
@@ -262,8 +267,8 @@ def test_Stetson(white_noise):
 	a = FeatureSpace(featureList=['SlottedA','StetsonK', 'StetsonK_AC', 'StetsonJ', 'StetsonL'], SlottedA = [white_noise[1], 4] ,StetsonJ = [white_noise[5] , white_noise[4]], StetsonL = [white_noise[5] , white_noise[4]])
 	a=a.calculateFeature(white_noise[0])
 
-	assert(a.result(method='array')[1] >= 0.793 and a.result(method='array')[1] <= 0.81)
-	assert(a.result(method='array')[2] >= 0.25 and a.result(method='array')[2] <= 0.44)
+	assert(a.result(method='array')[1] >= 0.790 and a.result(method='array')[1] <= 0.85)
+	assert(a.result(method='array')[2] >= 0.25 and a.result(method='array')[2] <= 0.45)
 	assert(a.result(method='array')[3] >= -0.1 and a.result(method='array')[3] <= 0.1)
 	assert(a.result(method='array')[4] >= -0.1 and a.result(method='array')[4] <= 0.1)
 
