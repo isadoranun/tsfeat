@@ -26791,7 +26791,7 @@ In&nbsp;[76]:
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>In order to check systematically the validity of each feature, every test mentioned above is added to a unit test file called &quot;test_library.py&quot;. This script should be always ran before using the library by executing $ py.test. Also, if the user writes a new feature for the library, a pertinent test should be added to the unit test file. The idea is to guarantee, as far as possible,  that every feature calculated is correct. In most of the cases this can be reached by calculating the expected feature value for a known distribution (normal, uniform, etc) and then by checking with the value obtained from the library.</p>
-<p>The following image shows how the</p>
+<p>The following image shows how py.test output should look if all the tests are passed:</p>
 </div>
 </div>
 </div>
@@ -27526,12 +27526,12 @@ A3qbZRStf1RIAAAAAElFTkSuQmCC
 
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[150]:
+In&nbsp;[178]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
 <div class="highlight"><pre><span class="n">picture</span> <span class="o">=</span> <span class="n">Image</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s">&#39;peanuts.jpg&#39;</span><span class="p">)</span>
-<span class="n">picture</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span>
+<span class="n">picture</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
 <span class="n">picture</span>
 </pre></div>
 
@@ -27546,7 +27546,7 @@ In&nbsp;[150]:
 
 
 <div class="output_area"><div class="prompt output_prompt">
-    Out[150]:</div>
+    Out[178]:</div>
 
 
 <div class="output_jpeg output_subarea output_pyout">
