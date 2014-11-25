@@ -160,7 +160,7 @@ def test_Meanvariance(uniform_lc):
 	a = FeatureSpace(featureList=['Meanvariance'])
 	a=a.calculateFeature(uniform_lc[0])
 
-	assert(a.result(method='array') >= 0.576 and a.result(method='array') <= 0.578)
+	assert(a.result(method='array') >= 0.575 and a.result(method='array') <= 0.580)
 
 def test_MedianAbsDev(white_noise):
 	# data, mjd, error, second_data, aligned_data, aligned_second_data, aligned_mjd = white_noise()
@@ -168,7 +168,7 @@ def test_MedianAbsDev(white_noise):
 	a = FeatureSpace(featureList=['MedianAbsDev'])
 	a=a.calculateFeature(white_noise[0])
 
-	assert(a.result(method='array') >= 0.650 and a.result(method='array') <= 0.690)
+	assert(a.result(method='array') >= 0.630 and a.result(method='array') <= 0.700)
 
 # def test_MedianBRP(white_noise):
 # 	# data, mjd, error, second_data, aligned_data, aligned_second_data, aligned_mjd = white_noise()
@@ -215,7 +215,7 @@ def test_Q31(white_noise):
 
 	a = FeatureSpace(featureList=['Q31'])
 	a=a.calculateFeature(white_noise[0])
-	assert(a.result(method='array') >= 1.30 and a.result(method='array') <= 1.36)
+	assert(a.result(method='array') >= 1.30 and a.result(method='array') <= 1.38)
 
 # def test_Q31B_R(white_noise):
 # 	# data, mjd, error, second_data, aligned_data, aligned_second_data, aligned_mjd = white_noise()
