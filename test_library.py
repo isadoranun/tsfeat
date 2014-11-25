@@ -249,7 +249,7 @@ def test_SmallKurtosis(white_noise):
 
 	a = FeatureSpace(featureList=['SmallKurtosis'])
 	a=a.calculateFeature(white_noise[0])
-	assert(a.result(method='array') >= -0.1 and a.result(method='array') <= 0.1)
+	assert(a.result(method='array') >= -0.2 and a.result(method='array') <= 0.2)
 
 
 def test_Std(white_noise):
