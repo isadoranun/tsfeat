@@ -1,0 +1,173 @@
+<script language="javascript">
+  /* Define the Animation class */
+  function Animation(frames, img_id, slider_id, loop_select_id){
+    this.img_id = img_id;
+    this.slider_id = slider_id;
+    this.loop_select_id = loop_select_id;
+    this.interval = 30;
+    this.current_frame = 0;
+    this.direction = 0;
+    this.timer = null;
+    this.frames = new Array(frames.length);
+
+    for (var i=0; i<frames.length; i++)
+    {
+     this.frames[i] = new Image();
+     this.frames[i].src = frames[i];
+    }
+    document.getElementById(this.slider_id).max = this.frames.length - 1;
+    this.set_frame(this.current_frame);
+  }
+
+  Animation.prototype.get_loop_state = function(){
+    var button_group = document[this.loop_select_id].state;
+    for (var i = 0; i < button_group.length; i++) {
+        var button = button_group[i];
+        if (button.checked) {
+            return button.value;
+        }
+    }
+    return undefined;
+  }
+
+  Animation.prototype.set_frame = function(frame){
+    this.current_frame = frame;
+    document.getElementById(this.img_id).src = this.frames[this.current_frame].src;
+    document.getElementById(this.slider_id).value = this.current_frame;
+  }
+
+  Animation.prototype.next_frame = function()
+  {
+    this.set_frame(Math.min(this.frames.length - 1, this.current_frame + 1));
+  }
+
+  Animation.prototype.previous_frame = function()
+  {
+    this.set_frame(Math.max(0, this.current_frame - 1));
+  }
+
+  Animation.prototype.first_frame = function()
+  {
+    this.set_frame(0);
+  }
+
+  Animation.prototype.last_frame = function()
+  {
+    this.set_frame(this.frames.length - 1);
+  } 
+
+  Animation.prototype.slower = function()
+  {
+    this.interval /= 0.7;
+    if(this.direction > 0){this.play_animation();}
+    else if(this.direction < 0){this.reverse_animation();}
+  }
+
+  Animation.prototype.faster = function()
+  {
+    this.interval *= 0.7;
+    if(this.direction > 0){this.play_animation();}
+    else if(this.direction < 0){this.reverse_animation();}
+  }
+
+  Animation.prototype.anim_step_forward = function()
+  {
+    this.current_frame += 1;
+    if(this.current_frame < this.frames.length){
+      this.set_frame(this.current_frame);
+    }else{
+      var loop_state = this.get_loop_state();
+      if(loop_state == "loop"){
+        this.first_frame();
+      }else if(loop_state == "reflect"){
+        this.last_frame();
+        this.reverse_animation();
+      }else{
+        this.pause_animation();
+        this.last_frame();
+      }
+    }
+  }
+
+  Animation.prototype.anim_step_reverse = function()
+  {
+    this.current_frame -= 1;
+    if(this.current_frame >= 0){
+      this.set_frame(this.current_frame);
+    }else{
+      var loop_state = this.get_loop_state();
+      if(loop_state == "loop"){
+        this.last_frame();
+      }else if(loop_state == "reflect"){
+        this.first_frame();
+        this.play_animation();
+      }else{
+        this.pause_animation();
+        this.first_frame();
+      }
+    }
+  }
+
+  Animation.prototype.pause_animation = function()
+  {
+    this.direction = 0;
+    if (this.timer){
+      clearInterval(this.timer);
+      this.timer = null;
+    }
+  }
+
+  Animation.prototype.play_animation = function()
+  {
+    this.pause_animation();
+    this.direction = 1;
+    var t = this;
+    if (!this.timer) this.timer = setInterval(function(){t.anim_step_forward();}, this.interval);
+  }
+
+  Animation.prototype.reverse_animation = function()
+  {
+    this.pause_animation();
+    this.direction = -1;
+    var t = this;
+    if (!this.timer) this.timer = setInterval(function(){t.anim_step_reverse();}, this.interval);
+  }
+</script>
+
+<div class="animation" align="center">
+    <img id="anim_img">
+    <br>
+    <input id="anim_frame_slider" type="range" style="width:350px" name="points" min="0" max="1" step="1" value="0" onchange="anim.set_frame(parseInt(this.value));"></input>
+    <br>
+    <button onclick="anim.slower()">&#8211;</button>
+    <button onclick="anim.first_frame()"><img src="icons/first.png"></button>
+    <button onclick="anim.previous_frame()"><img src="icons/prev.png"></button>
+    <button onclick="anim.reverse_animation()"><img src="icons/reverse.png"></button>
+    <button onclick="anim.pause_animation()"><img src="icons/pause.png"></button>
+    <button onclick="anim.play_animation()"><img src="icons/play.png"></button>
+    <button onclick="anim.next_frame()"><img src="icons/next.png"></button>
+    <button onclick="anim.last_frame()"><img src="icons/last.png"></button>
+    <button onclick="anim.faster()">+</button>
+  <form action="#n" name="loop_select" class="anim_control">
+    <input type="radio" name="state" value="once"> Once </input>
+    <input type="radio" name="state" value="loop" checked> Loop </input>
+    <input type="radio" name="state" value="reflect"> Reflect </input>
+  </form>
+</div>
+
+
+<script language="javascript">
+  /* Instantiate the Animation class. */
+  /* The IDs given should match those used in the template above. */
+  var img_id = "anim_img";
+  var slider_id = "anim_frame_slider";
+  var loop_select_id = "loop_select";
+  var frames = new Array(100);
+  for (var i=0; i<100; i++){
+    frames[i] =  "frames/frame" + ("00" + (i + 1)).slice(-3) + ".png";
+  }
+
+  /* Name of 'anim' variable should be unique, and match what's specified
+     in the template above */
+  anim = new Animation(frames, img_id, slider_id, loop_select_id);
+</script>
