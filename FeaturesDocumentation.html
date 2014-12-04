@@ -22444,10 +22444,10 @@ AKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKAP//Z
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The library is coded in python and can be downloaded for free from the github website <a href="https://github.com/isadoranun/tsfeat">https://github.com/isadoranun/tsfeat</a>. The main idea is that any user can run it in its own database but can also add new features through the github system. For a quick guide on how to use github visit <a href="https://guides.github.com/activities/hello-world/">https://guides.github.com/activities/hello-world/</a>.</p>
-<p>The library receives as input minimally the light-curve magnitude (light intensity) and returns as output a vector with the calculated features. The structure is divided into two main parts. Part one: Feature.py, is a wrapper class that allows the user to select the category of the features to be calculated or to specify a list of them. Part two: FeatureFunciontLib.py, contains the actual code for calculating the features. Each feature has its own class with at least two functions:</p>
+<p>The library receives as input minimally the light-curve magnitude (light intensity) and returns as output a vector with the calculated features. The structure is divided into two main parts. Part one: <em>Feature.py</em>, is a wrapper class that allows the user to select the category of the features to be calculated or to specify a list of them. Part two: <em>FeatureFunciontLib.py</em>, contains the actual code for calculating the features. Each feature has its own class with at least two functions:</p>
 <p><strong>init:</strong> receives the necessary inputs (other than the magnitude) for the feature calculation (e.g. observational error, observational time, magnitude in a different color band, etc.). It also defines the feature category, &quot;times-series&quot; or &quot;basic&quot;. </p>
 <p><strong>fit:</strong>  returns the calculated feature. The output can only take one value; features like the autocorrelation function must consequently be summarized in one single scalar.</p>
-<p>The following code is an example of a class in FeatureFunciontLib.py that calculates the slope of a linear fit to the light-curve:</p>
+<p>The following code is an example of a class in <em>FeatureFunciontLib.py</em> that calculates the slope of a linear fit to the light-curve:</p>
 <p>class LinearTrend(Base):</p>
 <pre><code>def __init__(self, mjd):
     self.category=&#39;timeSeries&#39;
@@ -22463,7 +22463,7 @@ def fit(self,data):
     regression_slope = stats.linregress(self.mjd, data)[0]
 
     return regression_slope
-</code></pre><p>If the user wants to contribute with feature(s) to the library, it (they) must be added to FeatureFunctionLib.py following the explained format. There is no need to modify Feature.py. The user should also add a validity test to the unit test file (see explanation <a href="#UnitTest">further down</a>).</p>
+</code></pre><p>If the user wants to contribute with feature(s) to the library, it (they) must be added to <em>FeatureFunctionLib.py</em> following the explained format. There is no need to modify <em>Feature.py</em>. The user should also add a validity test to the unit test file (see explanation <a href="#UnitTest">further down</a>).</p>
 </div>
 </div>
 </div>
@@ -22482,7 +22482,7 @@ def fit(self,data):
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The library  allows the user to either choose the specific features of interest to be calculated or to calculate them all simultaneously. Also, as already mentioned, the features are divided into two different categories (&quot;basic&quot; and &quot;times series&quot;) that can be used as a selection parameter. &quot;Basic&quot; refers to descriptors that are independent of time and thus of  the observations order (e.g. statistical features), in other words, they could be applied to data other than time series. On the other hand, in &quot;times series&quot; features, the ordering is essential since they are based on the fact that observations closed together in time will be probably more closely related than observations further apart.</p>
+<p>The library  allows the user to either choose the specific features of interest to be calculated or to calculate them all simultaneously. Also, as already mentioned, the features are divided into two different categories (&quot;basic&quot; and &quot;times series&quot;) that can be used as a selection parameter. &quot;Basic&quot; refers to descriptors that are independent of time and thus of  the observations order (e.g. statistical features). In other words, they could be applied to data other than time series. On the other hand, in &quot;times series&quot; features, the ordering is essential since they are based on the fact that observations closed together in time will be probably more closely related than observations further apart.</p>
 <p>By default the library receives only the magnitude data as input. As explained above, some features need extra data as the times of measurement or the associated error, this must be specified as a parameter of the feature. </p>
 <p>The list of all the possible features with their corresponding categories, parameters and literature source is presented in the following table: </p>
 </div>
@@ -22612,7 +22612,7 @@ In&nbsp;[15]:
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The user should define the category to be calculated by adding <em>category = </em> followed by the corresponding choice between brackets. In the example above we calculate the &quot;times series&quot; features of the data.</p>
+<p>The user should define the category to be calculated by adding <em>category = </em> followed by the corresponding choice between brackets. In the example below we calculate the &quot;times series&quot; features of the data.</p>
 </div>
 </div>
 </div>
