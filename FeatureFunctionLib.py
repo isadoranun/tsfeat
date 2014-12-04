@@ -75,7 +75,7 @@ class Meanvariance(Base):
         return np.std(data)/np.mean(data)
 
     
-class Autocor(Base):
+class Autocor_length(Base):
     
     def __init__(self):
         self.category='timeSeries'
@@ -88,7 +88,7 @@ class Autocor(Base):
 
         return k
 
-class SlottedA(Base):
+class SlottedA_length(Base):
 
     def __init__(self, entry):
         """
@@ -97,7 +97,7 @@ class SlottedA(Base):
         T: tau (slot size in days. default: 4)
         """
         self.category = 'timeSeries'
-        SlottedA.SAC =[]
+        SlottedA_length.SAC =[]
 
         self.mjd = entry[0]
         self.T = entry[1]
@@ -156,8 +156,8 @@ class SlottedA(Base):
         # T=4
         K1=100
         [SAC, slots] = self.slotted_autocorrelation(data, self.mjd, self.T, K1)
-        SlottedA.SAC = SAC
-        SlottedA.slots = slots
+        SlottedA_length.SAC = SAC
+        SlottedA_length.slots = slots
 
         SAC2 = SAC[slots]
         k = next((index for index,value in enumerate(SAC2) if value < np.exp(-1)), None)
@@ -172,9 +172,9 @@ class SlottedA(Base):
         return slots[k]*self.T  
 
     def getAtt(self):
-        return SlottedA.SAC, SlottedA.slots
+        return SlottedA_length.SAC, SlottedA_length.slots
 
-class StetsonK_AC(SlottedA):
+class StetsonK_AC(SlottedA_length):
 
     def __init__(self):
 
@@ -268,7 +268,7 @@ class Con(Base):
 #         return 1.0/((N-1)*sigma2) * np.sum(np.power(data[1:] - data[:-1] , 2))
 
 
-class B_R(Base):
+class Color(Base):
     '''
     average color for each MACHO lightcurve 
     mean(B1) - mean(B2)
@@ -276,7 +276,7 @@ class B_R(Base):
     def __init__(self, second_data):
         self.category='timeSeries'
         if second_data is None:
-            print "please provide another data series to compute B_R"
+            print "please provide another data series to compute Color"
             sys.exit(1)
         self.data2 = second_data
       
@@ -593,7 +593,7 @@ class LinearTrend(Base):
 
         return regression_slope
 
-class Eta_B_R(Base):
+class Eta_color(Base):
 
     
     def __init__(self,entry):
@@ -659,7 +659,7 @@ class Eta_e(Base):
         return eta_e
        
 
-class Bmean(Base):
+class Mean(Base):
 
     def __init__(self):
 
@@ -684,7 +684,7 @@ class Q31(Base):
 
         return np.percentile(data,75) - np.percentile(data,25)
 
-class Q31B_R(Base):
+class Q31_color(Base):
 
     def __init__(self,entry):
 

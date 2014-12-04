@@ -84,9 +84,9 @@ def test_Beyond1Std(white_noise):
 
 	assert(a.result(method='array') >= 0.30 and a.result(method='array') <= 0.40)
 
-def test_Bmean(white_noise):
+def test_Mean(white_noise):
 
-	a = FeatureSpace(featureList=['Bmean'])
+	a = FeatureSpace(featureList=['Mean'])
 	a=a.calculateFeature(white_noise[0])
 
 	assert(a.result(method='array') >= -0.1 and a.result(method='array') <= 0.1)
@@ -108,10 +108,10 @@ def test_Con(white_noise):
 
 	assert(a.result(method='array') >= 0.04 and a.result(method='array') <= 0.05)
 
-def test_Eta_B_R(white_noise):
+def test_Eta_color(white_noise):
 	# data, mjd, error, second_data, aligned_data, aligned_second_data, aligned_mjd = white_noise()
 
-	a = FeatureSpace(featureList=['Eta_B_R'] , Eta_B_R=[white_noise[5], white_noise[4], white_noise[6]])
+	a = FeatureSpace(featureList=['Eta_color'] , Eta_color=[white_noise[5], white_noise[4], white_noise[6]])
 	a=a.calculateFeature(white_noise[0])
 
 	assert(a.result(method='array') >= 1.9 and a.result(method='array') <= 2.1)
@@ -264,7 +264,7 @@ def test_Std(white_noise):
 def test_Stetson(white_noise):
 	# data, mjd, error, second_data, aligned_data, aligned_second_data, aligned_mjd = white_noise()
 
-	a = FeatureSpace(featureList=['SlottedA','StetsonK', 'StetsonK_AC', 'StetsonJ', 'StetsonL'], SlottedA = [white_noise[1], 4] ,StetsonJ = [white_noise[5] , white_noise[4]], StetsonL = [white_noise[5] , white_noise[4]])
+	a = FeatureSpace(featureList=['SlottedA_length','StetsonK', 'StetsonK_AC', 'StetsonJ', 'StetsonL'], SlottedA_length = [white_noise[1], 4] ,StetsonJ = [white_noise[5] , white_noise[4]], StetsonL = [white_noise[5] , white_noise[4]])
 	a=a.calculateFeature(white_noise[0])
 
 	assert(a.result(method='array')[1] >= 0.790 and a.result(method='array')[1] <= 0.85)

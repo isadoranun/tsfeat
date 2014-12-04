@@ -61,7 +61,7 @@ def main(argv):
 	    					aligned_second_data = second_data
 	    					aligned_mjd = mjd
 
-	    				a = FeatureSpace(featureList=['Bmean'], automean=[0,0], StetsonL=[aligned_second_data, aligned_data] , B_R=second_data, Beyond1Std=error, StetsonJ=[aligned_second_data, aligned_data], MaxSlope=mjd, LinearTrend=mjd, Eta_B_R=[aligned_second_data, aligned_data, aligned_mjd], Eta_e=mjd, Q31B_R=[aligned_second_data, aligned_data], PeriodLS=mjd, CAR_sigma=[mjd, error], SlottedA = mjd)
+	    				a = FeatureSpace(featureList=['Bmean'], automean=[0,0], StetsonL=[aligned_second_data, aligned_data] , Color=second_data, Beyond1Std=error, StetsonJ=[aligned_second_data, aligned_data], MaxSlope=mjd, LinearTrend=mjd, Eta_color=[aligned_second_data, aligned_data, aligned_mjd], Eta_e=mjd, Q31_color=[aligned_second_data, aligned_data], PeriodLS=mjd, CAR_sigma=[mjd, error], SlottedA_length = mjd)
 
 	    				try:
 	    					a=a.calculateFeature(data)

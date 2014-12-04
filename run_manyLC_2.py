@@ -42,7 +42,7 @@ for j in os.listdir(path)[8:]:
 
              #   a = FeatureSpace(category='all',featureList=None, automean=[0,0], StetsonL=[aligned_second_data, aligned_data] ,  B_R=second_data, Beyond1Std=error, StetsonJ=[aligned_second_data, aligned_data], MaxSlope=mjd, LinearTrend=mjd, Eta_B_R=[aligned_second_data, aligned_data], Eta_e=mjd, Q31B_R=[aligned_second_data, aligned_data], PeriodLS=mjd, CAR_sigma=[mjd, error], SlottedA = mjd)
 
-                a = FeatureSpace(featureList=['PeriodLS', 'Psi_CS','Psi_eta','Rcs'], Automean=[0,0], StetsonL=[aligned_second_data, aligned_data] ,  B_R=second_data, Beyond1Std=error, StetsonJ=[aligned_second_data, aligned_data], MaxSlope=mjd, LinearTrend=mjd, Eta_B_R=[aligned_second_data, aligned_data, aligned_mjd], Eta_e=mjd, Q31B_R=[aligned_second_data, aligned_data],  CAR_sigma=[mjd, error], SlottedA = mjd, PeriodLS=mjd, Psi_CS = mjd)
+                a = FeatureSpace(featureList=['PeriodLS', 'Psi_CS','Psi_eta','Rcs'], Automean=[0,0], StetsonL=[aligned_second_data, aligned_data] ,  Color=second_data, Beyond1Std=error, StetsonJ=[aligned_second_data, aligned_data], MaxSlope=mjd, LinearTrend=mjd, Eta_color=[aligned_second_data, aligned_data, aligned_mjd], Eta_e=mjd, Q31_color=[aligned_second_data, aligned_data],  CAR_sigma=[mjd, error], SlottedA_length = mjd, PeriodLS=mjd, Psi_CS = mjd)
                 try:
                     a=a.calculateFeature(data)
                     guardar = np.vstack((guardar, np.hstack((i[3:-6] , a.result(method='array') , folder ))))
