@@ -22444,7 +22444,7 @@ AKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKAP//Z
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The library is coded in python and can be downloaded for free from the github website <a href="https://github.com/isadoranun/tsfeat">https://github.com/isadoranun/tsfeat</a>. The main idea is that any user can run it in its own database but can also add new features through the github system. For a quick guide on how to use github visit <a href="https://guides.github.com/activities/hello-world/">https://guides.github.com/activities/hello-world/</a>.</p>
-<p>It is also possible to obtain the library by installing the python package FATS:</p>
+<p>It is also possible to obtain the library by downloading the python package from <a href="https://pypi.python.org/pypi/FATS/1.2.0">https://pypi.python.org/pypi/FATS/1.2.0</a> or by directly installing it from the terminal:</p>
 <p><em>$ pip install FATS</em></p>
 <p>The library receives as input minimally the light-curve magnitude (light intensity) and returns as output a vector with the calculated features. The structure is divided into two main parts. Part one: <em>Feature.py</em>, is a wrapper class that allows the user to select the category of the features to be calculated or to specify a list of them. Part two: <em>FeatureFunciontLib.py</em>, contains the actual code for calculating the features. Each feature has its own class with at least two functions:</p>
 <p><strong>init:</strong> receives the necessary inputs (other than the magnitude) for the feature calculation (e.g. observational error, observational time, magnitude in a different color band, etc.). It also defines the feature category, &quot;times-series&quot; or &quot;basic&quot;. </p>
