@@ -1,7 +1,7 @@
 
 from Feature import FeatureSpace
 import numpy as np
-from import_lightcurve import LeerLC_MACHO
+from import_lightcurve import ReadLC_MACHO
 from PreprocessLC import Preprocess_LC
 from alignLC import Align_LC
 import os.path
@@ -23,13 +23,13 @@ for j in os.listdir(path)[8:]:
 
             if i.endswith("B.mjd") and not i.startswith('.') and os.path.isfile(path + j +'/'+ i[:-5] + 'R.mjd'):
 
-                lc_B = LeerLC_MACHO(path + j +'/'+ i[:])
-                lc_R = LeerLC_MACHO(path + j +'/'+ i[:-5] + 'R.mjd')
+                lc_B = ReadLC_MACHO(path + j +'/'+ i[:])
+                lc_R = ReadLC_MACHO(path + j +'/'+ i[:-5] + 'R.mjd')
 
         #Opening the light curve
 
-                [data, mjd, error] = lc_B.leerLC()
-                [data2, mjd2, error2] = lc_R.leerLC()
+                [data, mjd, error] = lc_B.ReadLC()
+                [data2, mjd2, error2] = lc_R.ReadLC()
 
                 preproccesed_data = Preprocess_LC(data, mjd, error)
                 [data, mjd, error] = preproccesed_data.Preprocess()

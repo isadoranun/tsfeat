@@ -2,14 +2,14 @@
 #from Feature import FeatureSpace
 import numpy as np
 
-class LeerLC_MACHO:
+class ReadLC_MACHO:
 
 
     def __init__(self,id):
 
         self.id=id
 
-    def leerLC(self):
+    def ReadLC(self):
 
         # Opening the blue band
         fid = open(self.id,'r')

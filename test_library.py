@@ -2,7 +2,7 @@
 
 from Feature import FeatureSpace
 import numpy as np
-from import_lc_cluster import LeerLC_MACHO
+from import_lc_cluster import ReadLC_MACHO
 from PreprocessLC import Preprocess_LC
 from alignLC import Align_LC
 import os.path

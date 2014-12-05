@@ -2,7 +2,7 @@
 
 from Feature import FeatureSpace
 import numpy as np
-from import_lc_cluster import LeerLC_MACHO
+from import_lc_cluster import ReadLC_MACHO
 from PreprocessLC import Preprocess_LC
 from alignLC import Align_LC
 import os.path
@@ -50,10 +50,10 @@ for j in os.listdir(path):
 	    				content1 = f.read().split('\n')
 	    				content2 = g.read().split('\n')
         				
-	    				lc_B = LeerLC_MACHO(content1)
-	    				lc_R = LeerLC_MACHO(content2)
-	    				[data, mjd, error] = lc_B.leerLC()
-	    				[data2, mjd2, error2] = lc_R.leerLC()
+	    				lc_B = ReadLC_MACHO(content1)
+	    				lc_R = ReadLC_MACHO(content2)
+	    				[data, mjd, error] = lc_B.ReadLC()
+	    				[data2, mjd2, error2] = lc_R.ReadLC()
 
 	    				preproccesed_data = Preprocess_LC(data, mjd, error)
 	    				[data, mjd, error] = preproccesed_data.Preprocess()
