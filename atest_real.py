@@ -1,10 +1,9 @@
+import numpy as np
 
 from Feature import FeatureSpace
-import numpy as np
 from import_lightcurve import LeerLC_MACHO
 from PreprocessLC import Preprocess_LC
 from alignLC import Align_LC
-
 
 
 #Opening the light curve
@@ -22,12 +21,25 @@ preproccesed_data = Preprocess_LC(data2, mjd2, error2)
 
 
 if len(data) != len(second_data):
-	[aligned_data, aligned_second_data, aligned_mjd] = Align_LC(mjd, mjd2, data, second_data, error, error2)
+    [aligned_data, aligned_second_data, aligned_mjd] = Align_LC(mjd, mjd2,
+                                                                data,
+                                                                second_data,
+                                                                error, error2)
 
 
 #Calculating the features
-a = FeatureSpace(featureList=['PeriodLS','Psi_CS','Psi_eta'], automean=[0,0], StetsonL=[aligned_second_data, aligned_data] ,  B_R=second_data, Beyond1Std=error, StetsonJ=[aligned_second_data, aligned_data], MaxSlope=mjd, LinearTrend=mjd, Eta_B_R=[aligned_second_data, aligned_data, aligned_mjd], Eta_e=mjd, Q31B_R=[aligned_second_data, aligned_data], PeriodLS=mjd, Psi_CS = mjd, CAR_sigma=[mjd, error], SlottedA = mjd)
-a=a.calculateFeature(data)
+a = FeatureSpace(featureList=['PeriodLS', 'Psi_CS', 'Psi_eta'],
+                 automean=[0, 0], StetsonL=[aligned_second_data, aligned_data],
+                 B_R=second_data, Beyond1Std=error,
+                 StetsonJ=[aligned_second_data, aligned_data], MaxSlope=mjd,
+                 LinearTrend=mjd,
+                 Eta_B_R=[aligned_second_data, aligned_data, aligned_mjd],
+                 Eta_e=mjd, Q31B_R=[aligned_second_data, aligned_data],
+                 PeriodLS=mjd, Psi_CS=mjd, CAR_sigma=[mjd, error],
+                 SlottedA=mjd
+                 )
+
+a = a.calculateFeature(data)
 
 print a.result(method='dict')
 
@@ -36,4 +48,6 @@ print a.result(method='dict')
 # # a=np.vstack((previous_data,a))
 # np.savetxt('test_real.csv', guardar, delimiter="," ,fmt="%s")
 
-#B_R = second_data, Eta_B_R = second_data, Eta_e = mjd, MaxSlope = mjd, PeriodLS = mjd, Q31B_R = second_data, StetsonJ = second_data, StetsonL = second_data)
+#B_R = second_data, Eta_B_R = second_data, Eta_e = mjd, MaxSlope = mjd,
+#PeriodLS = mjd, Q31B_R = second_data, StetsonJ = second_data,
+#StetsonL = second_data)
