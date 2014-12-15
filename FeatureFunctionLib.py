@@ -792,9 +792,6 @@ class Period_fit(Base):
 
     def fit(self, data):
 
-        # a = Period_fit()
-        # return a.getPeriod_fit()
-
         return prob
 
 
@@ -973,3 +970,56 @@ class CAR_tmean(CAR_sigma):
 
         a = CAR_tmean()
         return np.mean(data) / a.getAtt()
+
+class Harmonics(Base):
+    def __init__(self, mjd):
+        self.category = 'timeSeries'
+        if mjd is None:
+            print "please provide the measurement times to compute Harmonics"
+            sys.exit(1)
+        self.mjd = mjd
+
+    def fit(self, data):
+        A = []
+        PH = []
+        
+        def model(x, a, b, c, freq):
+             return a*np.sin(2*np.pi*freq*x)+b*np.cos(2*np.pi*freq*x)+c
+            
+        for i in range(3):
+            wk1, wk2, nout, jmax, prob = lomb.fasper(mjd2, data2, 6., 100.)
+        
+            fundamental_freq = wk1[jmax]
+            
+            # fit to a_i sin(2pi f_i t) + b_i cos(2 pi f_i t) + b_i,o
+            
+            # a, b are the parameters we care about
+            # c is a constant offset
+            # f is the fundamental frequency
+            def yfunc(freq):
+                def func(x, a, b, c):
+                    return a*np.sin(2*np.pi*freq*x)+b*np.cos(2*np.pi*freq*x)+c
+                return func
+            
+            Atemp = []
+            PHtemp = []
+            popts = []
+            
+            for j in range(4):
+                popt, pcov = optimize.curve_fit(yfunc((j+1)*fundamental_freq), mjd2, data2)
+                Atemp.append(np.sqrt(popt[0]**2+popt[1]**2))
+                PHtemp.append(np.arctan(popt[1] / popt[0]))
+                popts.append(popt)
+            
+            A.append(Atemp)
+            PH.append(PHtemp)
+            
+            for j in range(4):
+                data2 = np.array(data2) - model(mjd2, popts[j][0], popts[j][1], popts[j][2], (j+1)*fundamental_freq)
+        
+        scaledPH = []
+        for ph in PH:
+            scaledPH.append(np.array(ph) - ph[0])
+
+        return A, PH, scaledPH
+
