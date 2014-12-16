@@ -2,14 +2,14 @@
 #from Feature import FeatureSpace
 import numpy as np
 
-class LeerLC_MACHO:
+class ReadLC_MACHO:
 
 
     def __init__(self,lc):
 
         self.content1=lc
 
-    def leerLC(self):
+    def ReadLC(self):
 
         data = []
         mjd = []

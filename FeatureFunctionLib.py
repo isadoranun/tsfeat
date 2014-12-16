@@ -21,10 +21,11 @@ class Amplitude(Base):
         self.category = 'basic'
 
     def fit(self, data):
-        N = len(data)
-        sorted = np.sort(data)
-        return (np.median(sorted[-0.05 * N:]) -
-                np.median(sorted[0:0.05 * N])) / 2
+        magnitude = data[0]
+        N = len(magnitude)
+        sorted_mag = np.sort(magnitude)
+        return (np.median(sorted_mag[-0.05 * N:]) -
+                np.median(sorted_mag[0:0.05 * N])) / 2
 
 
 class Rcs(Base):
@@ -33,10 +34,11 @@ class Rcs(Base):
         self.category = 'timeSeries'
 
     def fit(self, data):
-        sigma = np.std(data)
-        N = len(data)
-        m = np.mean(data)
-        s = np.cumsum(data - m) * 1.0 / (N * sigma)
+        magnitude = data[0]
+        sigma = np.std(magnitude)
+        N = len(magnitude)
+        m = np.mean(magnitude)
+        s = np.cumsum(magnitude - m) * 1.0 / (N * sigma)
         R = np.max(s) - np.min(s)
         return R
 
@@ -46,9 +48,10 @@ class StetsonK(Base):
         self.category = 'timeSeries'
 
     def fit(self, data):
-        N = len(data)
+        magnitude = data[0]
+        N = len(magnitude)
         sigmap = (np.sqrt(N * 1.0 / (N - 1)) *
-                  (data - np.mean(data)) / np.std(data))
+                  (magnitude - np.mean(magnitude)) / np.std(magnitude))
 
         K = (1 / np.sqrt(N * 1.0) *
              np.sum(np.abs(sigmap)) / np.sqrt(np.sum(sigmap ** 2)))
@@ -59,16 +62,15 @@ class StetsonK(Base):
 class Automean(Base):
     """This is just a prototype, not a real feature"""
 
-    def __init__(self, length):
+    def __init__(self, length = [0,0]):
         self.category = 'basic'
-        if len(length) != 2:
-            print "need 2 parameters for feature automean"
-            sys.exit(1)
+        
         self.length = length[0]
         self.length2 = length[1]
 
     def fit(self, data):
-        return np.mean(data) + self.length + self.length2
+        magnitude = data[0]        
+        return np.mean(magnitude) + self.length + self.length2
 
 
 class Meanvariance(Base):
@@ -77,17 +79,19 @@ class Meanvariance(Base):
         self.category = 'basic'
 
     def fit(self, data):
-        return np.std(data) / np.mean(data)
+        magnitude = data[0]
+        return np.std(magnitude) / np.mean(magnitude)
 
 
 class Autocor_length(Base):
 
-    def __init__(self):
+    def __init__(self, nlags = 100):
         self.category = 'timeSeries'
+        self.nlags = nlags
 
     def fit(self, data):
-
-        AC = stattools.acf(data, nlags=100)
+        magnitude = data[0]
+        AC = stattools.acf(magnitude, self.nlags)
         k = next((index for index, value in
                  enumerate(AC) if value < np.exp(-1)), None)
 
@@ -96,7 +100,7 @@ class Autocor_length(Base):
 
 class SlottedA_length(Base):
 
-    def __init__(self, entry):
+    def __init__(self, T = 4):
         """
         lc: MACHO lightcurve in a pandas DataFrame
         k: lag (default: 1)
@@ -105,24 +109,23 @@ class SlottedA_length(Base):
         self.category = 'timeSeries'
         SlottedA_length.SAC = []
 
-        self.mjd = entry[0]
-        self.T = entry[1]
+        self.T = T
 
-    def slotted_autocorrelation(self, data, mjd, T, K,
+    def slotted_autocorrelation(self, data, time, T, K,
                                 second_round=False, K1=100):
 
         slots = np.zeros((K, 1))
         i = 1
 
         # make time start from 0
-        mjd = mjd - np.min(mjd)
+        time = time - np.min(time)
 
         # subtract mean from mag values
         m = np.mean(data)
         data = data - m
 
         prod = np.zeros((K, 1))
-        pairs = np.subtract.outer(mjd, mjd)
+        pairs = np.subtract.outer(time, time)
         pairs[np.tril_indices_from(pairs)] = 10000000
 
         ks = np.int64(np.floor(np.abs(pairs) / T + 0.5))
@@ -158,10 +161,12 @@ class SlottedA_length(Base):
         return prod / prod[0], np.int64(slots).flatten()
 
     def fit(self, data):
+        magnitude = data[0]
+        time = data[1]
 
         # T=4
         K1 = 100
-        [SAC, slots] = self.slotted_autocorrelation(data, self.mjd, self.T, K1)
+        [SAC, slots] = self.slotted_autocorrelation(magnitude, time, self.T, K1)
         SlottedA_length.SAC = SAC
         SlottedA_length.slots = slots
 
@@ -171,7 +176,7 @@ class SlottedA_length(Base):
 
         if k is None:
             K2 = 200
-            [SAC, slots] = self.slotted_autocorrelation(data, self.mjd, self.T,
+            [SAC, slots] = self.slotted_autocorrelation(magnitude, time, self.T,
                                                         K2, second_round=True,
                                                         K1=K1)
             SAC2 = SAC[slots]
@@ -191,7 +196,6 @@ class StetsonK_AC(SlottedA_length):
         self.category = 'timeSeries'
 
     def fit(self, data):
-
         a = StetsonK_AC()
         [autocor_vector, slots] = a.getAtt()
 
@@ -208,27 +212,25 @@ class StetsonK_AC(SlottedA_length):
 
 
 class StetsonL(Base):
-    def __init__(self, entry):
+    def __init__(self):
         self.category = 'timeSeries'
-        # if second_data is None:
-        #     print "please provide another data series to compute StetsonL"
-        #     sys.exit(1)
-        self.data2 = entry[0]
-        self.aligned_data = entry[1]
 
     def fit(self, data):
 
-        N = len(self.aligned_data)
+        aligned_magnitude = data[4]
+        aligned_magnitude2 = data[5]
+
+        N = len(aligned_magnitude)
 
             #sys.exit(1)
 
         sigmap = (np.sqrt(N * 1.0 / (N - 1)) *
-                 (self.aligned_data[:N] - np.mean(self.aligned_data)) /
-                  np.std(self.aligned_data))
+                 (aligned_magnitude[:N] - np.mean(aligned_magnitude)) /
+                  np.std(aligned_magnitude))
 
         sigmaq = (np.sqrt(N * 1.0 / (N - 1)) *
-                 (self.data2[:N] - np.mean(self.data2)) /
-                  np.std(self.data2))
+                 (aligned_magnitude2[:N] - np.mean(aligned_magnitude2)) /
+                  np.std(aligned_magnitude2))
         sigma_i = sigmap * sigmaq
 
         J = (1.0 / len(sigma_i) *
@@ -254,17 +256,18 @@ class Con(Base):
 
     def fit(self, data):
 
-        N = len(data)
+        magnitude = data[0]
+        N = len(magnitude)
         if N < self.consecutiveStar:
             return 0
-        sigma = np.std(data)
-        m = np.mean(data)
+        sigma = np.std(magnitude)
+        m = np.mean(magnitude)
         count = 0
 
         for i in xrange(N - self.consecutiveStar + 1):
             flag = 0
             for j in xrange(self.consecutiveStar):
-                if(data[i + j] > m + 2 * sigma or data[i + j] < m - 2 * sigma):
+                if(magnitude[i + j] > m + 2 * sigma or magnitude[i + j] < m - 2 * sigma):
                     flag = 1
                 else:
                     flag = 0
@@ -298,15 +301,14 @@ class Color(Base):
     """Average color for each MACHO lightcurve
     mean(B1) - mean(B2)
     """
-    def __init__(self, second_data):
+    def __init__(self):
         self.category = 'timeSeries'
-        if second_data is None:
-            print "please provide another data series to compute Color"
-            sys.exit(1)
-        self.data2 = second_data
+        
 
     def fit(self, data):
-        return np.mean(data) - np.mean(self.data2)
+        magnitude = data[0]
+        magnitude2 = data[3]
+        return np.mean(magnitude) - np.mean(magnitude2)
 
 
 # The categories of the following featurs should be revised
@@ -316,25 +318,25 @@ class Beyond1Std(Base):
     (by photometric errors) mean
     """
 
-    def __init__(self, error):
-        self.category = 'basic'
-        if error is None:
-            print "please provide the measurement erros to compute Beyond1Std"
-            sys.exit(1)
-        self.error = error
+    def __init__(self):
+        self.category = 'timeSeries'
+    
 
     def fit(self, data):
-        n = len(data)
 
-        weighted_mean = np.average(data, weights=1 / self.error ** 2)
+        magnitude = data[0]
+        error = data[2]
+        n = len(magnitude)
+
+        weighted_mean = np.average(magnitude, weights=1 / error ** 2)
 
         # Standard deviation with respect to the weighted mean
 
-        var = sum((data - weighted_mean) ** 2)
+        var = sum((magnitude - weighted_mean) ** 2)
         std = np.sqrt((1.0 / (n - 1)) * var)
 
-        count = np.sum(np.logical_or(data > weighted_mean + std,
-                                     data < weighted_mean - std))
+        count = np.sum(np.logical_or(magnitude > weighted_mean + std,
+                                     magnitude < weighted_mean - std))
 
         return float(count) / n
 
@@ -349,11 +351,12 @@ class SmallKurtosis(Base):
         self.category = 'basic'
 
     def fit(self, data):
-        n = len(data)
-        mean = np.mean(data)
-        std = np.std(data)
+        magnitude = data[0]
+        n = len(magnitude)
+        mean = np.mean(magnitude)
+        std = np.std(magnitude)
 
-        S = sum(((data - mean) / std) ** 4)
+        S = sum(((magnitude - mean) / std) ** 4)
 
         c1 = float(n * (n + 1)) / ((n - 1) * (n - 2) * (n - 3))
         c2 = float(3 * (n - 1) ** 2) / ((n - 2) * (n - 3))
@@ -368,7 +371,8 @@ class Std(Base):
         self.category = 'basic'
 
     def fit(self, data):
-        return np.std(data)
+        magnitude = data[0]
+        return np.std(magnitude)
 
 
 class Skew(Base):
@@ -378,30 +382,27 @@ class Skew(Base):
         self.category = 'basic'
 
     def fit(self, data):
-        return stats.skew(data)
+        magnitude = data[0]
+        return stats.skew(magnitude)
 
 
 class StetsonJ(Base):
     """Stetson (1996) variability index, a robust standard deviation"""
 
-    def __init__(self, entry):
+    def __init__(self):
         self.category = 'timeSeries'
-        # if second_data is None:
-        #     print "please provide another data series to compute StetsonJ"
-        #     sys.exit(1)
-        self.data2 = entry[0]
-        self.aligned_data = entry[1]
 
     def fit(self, data):
-
-        N = len(self.data2)
+        aligned_magnitude = data[4]
+        aligned_magnitude2 = data[5]
+        N = len(aligned_magnitude)
 
         sigmap = (np.sqrt(N * 1.0 / (N - 1)) *
-                 (self.aligned_data[:N] - np.mean(self.aligned_data)) /
-                  np.std(self.aligned_data))
+                 (aligned_magnitude[:N] - np.mean(aligned_magnitude)) /
+                  np.std(aligned_magnitude))
         sigmaq = (np.sqrt(N * 1.0 / (N - 1)) *
-                 (self.data2[:N] - np.mean(self.data2)) /
-                  np.std(self.data2))
+                 (aligned_magnitude2[:N] - np.mean(aligned_magnitude2)) /
+                  np.std(aligned_magnitude2))
         sigma_i = sigmap * sigmaq
 
         J = (1.0 / len(sigma_i) * np.sum(np.sign(sigma_i) *
@@ -416,16 +417,14 @@ class MaxSlope(Base):
     (value of delta magnitude over delta time)
     """
 
-    def __init__(self, mjd):
+    def __init__(self):
         self.category = 'timeSeries'
-        if mjd is None:
-            print "please provide the measurement times to compute MaxSlope"
-            sys.exit(1)
-        self.mjd = mjd
 
     def fit(self, data):
 
-        slope = np.abs(data[1:] - data[:-1]) / (self.mjd[1:] - self.mjd[:-1])
+        magnitude = data[0]
+        time = data[1]
+        slope = np.abs(magnitude[1:] - magnitude[:-1]) / (time[1:] - time[:-1])
         np.max(slope)
 
         return np.max(slope)
@@ -437,9 +436,10 @@ class MedianAbsDev(Base):
         self.category = 'basic'
 
     def fit(self, data):
-        median = np.median(data)
+        magnitude = data[0]
+        median = np.median(magnitude)
 
-        devs = (abs(data - median))
+        devs = (abs(magnitude - median))
 
         return np.median(devs)
 
@@ -455,12 +455,13 @@ class MedianBRP(Base):
         self.category = 'basic'
 
     def fit(self, data):
-        median = np.median(data)
-        amplitude = (np.max(data) - np.min(data)) / 10
-        n = len(data)
+        magnitude = data[0]
+        median = np.median(magnitude)
+        amplitude = (np.max(magnitude) - np.min(magnitude)) / 10
+        n = len(magnitude)
 
-        count = np.sum(np.logical_and(data < median + amplitude,
-                                      data > median - amplitude))
+        count = np.sum(np.logical_and(magnitude < median + amplitude,
+                                      magnitude > median - amplitude))
 
         return float(count) / n
 
@@ -476,7 +477,8 @@ class PairSlopeTrend(Base):
         self.category = 'timeSeries'
 
     def fit(self, data):
-        data_last = data[-30:]
+        magnitude = data[0]
+        data_last = magnitude[-30:]
 
         return (float(len(np.where(np.diff(data_last) > 0)[0]) -
                 len(np.where(np.diff(data_last) <= 0)[0])) / 30)
@@ -488,7 +490,8 @@ class FluxPercentileRatioMid20(Base):
         self.category = 'basic'
 
     def fit(self, data):
-        sorted_data = np.sort(data)
+        magnitude = data[0]
+        sorted_data = np.sort(magnitude)
         lc_length = len(sorted_data)
 
         F_60_index = int(0.60 * lc_length)
@@ -509,7 +512,8 @@ class FluxPercentileRatioMid35(Base):
         self.category = 'basic'
 
     def fit(self, data):
-        sorted_data = np.sort(data)
+        magnitude = data[0]
+        sorted_data = np.sort(magnitude)
         lc_length = len(sorted_data)
 
         F_325_index = int(0.325 * lc_length)
@@ -530,7 +534,8 @@ class FluxPercentileRatioMid50(Base):
         self.category = 'basic'
 
     def fit(self, data):
-        sorted_data = np.sort(data)
+        magnitude = data[0]
+        sorted_data = np.sort(magnitude)
         lc_length = len(sorted_data)
 
         F_25_index = int(0.25 * lc_length)
@@ -551,7 +556,8 @@ class FluxPercentileRatioMid65(Base):
         self.category = 'basic'
 
     def fit(self, data):
-        sorted_data = np.sort(data)
+        magnitude = data[0]
+        sorted_data = np.sort(magnitude)
         lc_length = len(sorted_data)
 
         F_175_index = int(0.175 * lc_length)
@@ -572,7 +578,8 @@ class FluxPercentileRatioMid80(Base):
         self.category = 'basic'
 
     def fit(self, data):
-        sorted_data = np.sort(data)
+        magnitude = data[0]
+        sorted_data = np.sort(magnitude)
         lc_length = len(sorted_data)
 
         F_10_index = int(0.10 * lc_length)
@@ -593,10 +600,10 @@ class PercentDifferenceFluxPercentile(Base):
         self.category = 'basic'
 
     def fit(self, data):
+        magnitude = data[0]
+        median_data = np.median(magnitude)
 
-        median_data = np.median(data)
-
-        sorted_data = np.sort(data)
+        sorted_data = np.sort(magnitude)
         lc_length = len(sorted_data)
         F_5_index = int(0.05 * lc_length)
         F_95_index = int(0.95 * lc_length)
@@ -613,9 +620,9 @@ class PercentAmplitude(Base):
         self.category = 'basic'
 
     def fit(self, data):
-
-        median_data = np.median(data)
-        distance_median = np.abs(data - median_data)
+        magnitude = data[0]
+        median_data = np.median(magnitude)
+        distance_median = np.abs(magnitude - median_data)
         max_distance = np.max(distance_median)
 
         percent_amplitude = max_distance / median_data
@@ -625,82 +632,71 @@ class PercentAmplitude(Base):
 
 class LinearTrend(Base):
 
-    def __init__(self, mjd):
+    def __init__(self):
         self.category = 'timeSeries'
 
-        if mjd is None:
-            print "please provide the measurement times to compute LinearTrend"
-            sys.exit(1)
-        self.mjd = mjd
-
     def fit(self, data):
-
-        regression_slope = stats.linregress(self.mjd, data)[0]
+        magnitude = data[0]
+        time = data[1]
+        regression_slope = stats.linregress(time, magnitude)[0]
 
         return regression_slope
 
 
 class Eta_color(Base):
 
-    def __init__(self, entry):
+    def __init__(self):
 
         self.category = 'timeSeries'
-        # if second_data is None:
-        #     print "please provide another data series to compute Eta_B_R"
-        #     sys.exit(1)
-        self.data2 = np.asarray(entry[0])
-        self.aligned_data = np.asarray(entry[1])
-        self.mjd = np.asarray(entry[2])
 
     def fit(self, data):
-
-        N = len(self.aligned_data)
-        B_Rdata = self.aligned_data - self.data2
+        aligned_magnitude = data[4]
+        aligned_magnitude2 = data[5]
+        aligned_time = data[6]
+        N = len(aligned_magnitude)
+        B_Rdata = aligned_magnitude - aligned_magnitude2
         # # N = len(B_Rdata)
         # sigma2 = np.var(B_Rdata)
 
         # return 1.0/((N-1)*sigma2) * np.sum(np.power(B_Rdata[1:] -
             #B_Rdata[:-1] , 2))
 
-        w = 1.0 / np.power(self.mjd[1:] - self.mjd[:-1], 2)
+        w = 1.0 / np.power(aligned_time[1:] - aligned_time[:-1], 2)
         w_mean = np.mean(w)
 
-        N = len(self.mjd)
+        N = len(aligned_time)
         sigma2 = np.var(B_Rdata)
 
         S1 = sum(w * (B_Rdata[1:] - B_Rdata[:-1]) ** 2)
         S2 = sum(w)
 
-        eta_B_R = (w_mean * np.power(self.mjd[N - 1] -
-                   self.mjd[0], 2) * S1 / (sigma2 * S2 * N ** 2))
+        eta_B_R = (w_mean * np.power(aligned_time[N - 1] -
+                   aligned_time[0], 2) * S1 / (sigma2 * S2 * N ** 2))
 
         return eta_B_R
 
 
 class Eta_e(Base):
 
-    def __init__(self, mjd):
+    def __init__(self):
 
         self.category = 'timeSeries'
 
-        if mjd is None:
-            print "please provide the measurement times to compute Eta_e"
-            sys.exit(1)
-        self.mjd = mjd
-
     def fit(self, data):
 
-        w = 1.0 / np.power(self.mjd[1:] - self.mjd[:-1], 2)
+        magnitude = data[0]
+        time = data[1]
+        w = 1.0 / np.power(time[1:] - time[:-1], 2)
         w_mean = np.mean(w)
 
-        N = len(self.mjd)
-        sigma2 = np.var(data)
+        N = len(time)
+        sigma2 = np.var(magnitude)
 
-        S1 = sum(w * (data[1:] - data[:-1]) ** 2)
+        S1 = sum(w * (magnitude[1:] - magnitude[:-1]) ** 2)
         S2 = sum(w)
 
-        eta_e = (w_mean * np.power(self.mjd[N - 1] -
-                 self.mjd[0], 2) * S1 / (sigma2 * S2 * N ** 2))
+        eta_e = (w_mean * np.power(time[N - 1] -
+                 time[0], 2) * S1 / (sigma2 * S2 * N ** 2))
 
         return eta_e
 
@@ -712,8 +708,8 @@ class Mean(Base):
         self.category = 'basic'
 
     def fit(self, data):
-
-        B_mean = np.mean(data)
+        magnitude = data[0]
+        B_mean = np.mean(magnitude)
 
         return B_mean
 
@@ -725,25 +721,21 @@ class Q31(Base):
         self.category = 'basic'
 
     def fit(self, data):
-
-        return np.percentile(data, 75) - np.percentile(data, 25)
+        magnitude = data[0]
+        return np.percentile(magnitude, 75) - np.percentile(magnitude, 25)
 
 
 class Q31_color(Base):
 
-    def __init__(self, entry):
+    def __init__(self):
 
         self.category = 'timeSeries'
-        # if second_data is None:
-        #     print "please provide another data series to compute Q31B_R"
-        #     sys.exit(1)
-        self.data2 = entry[0]
-        self.aligned_data = entry[1]
 
     def fit(self, data):
-
-        N = len(self.data2)
-        b_r = self.aligned_data[:N] - self.data2[:N]
+        aligned_magnitude = data[4]
+        aligned_magnitude2 = data[5]
+        N = len(aligned_magnitude)
+        b_r = aligned_magnitude[:N] - aligned_magnitude2[:N]
 
         return np.percentile(b_r, 75) - np.percentile(b_r, 25)
 
@@ -756,30 +748,30 @@ class AndersonDarling(Base):
 
     def fit(self, data):
 
-        ander = stats.anderson(data)[0]
+        magnitude = data[0]
+        ander = stats.anderson(magnitude)[0]
         #return ander
         return 1 / (1.0 + np.exp(-10 * (ander - 0.3)))
 
 
 class PeriodLS(Base):
 
-    def __init__(self, mjd):
+    def __init__(self, ofac = 6.):
 
         self.category = 'timeSeries'
-
-        if mjd is None:
-            print "please provide the measurement times to compute PeriodLS"
-            sys.exit(1)
-        self.mjd = mjd
+        self.ofac = ofac;
 
     def fit(self, data):
 
-        global new_mjd
+        magnitude = data[0]
+        time = data[1]
+
+        global new_time
         global prob
 
-        fx, fy, nout, jmax, prob = lomb.fasper(self.mjd, data, 6., 100.)
+        fx, fy, nout, jmax, prob = lomb.fasper(time, magnitude, self.ofac, 100.)
         T = 1.0 / fx[jmax]
-        new_mjd = np.mod(self.mjd, 2 * T) / (2 * T)
+        new_time = np.mod(time, 2 * T) / (2 * T)
 
         return T
 
@@ -797,14 +789,14 @@ class Period_fit(Base):
 
 class Psi_CS(Base):
 
-    def __init__(self, mjd):
+    def __init__(self):
 
         self.category = 'timeSeries'
-        self.mjd = mjd
 
     def fit(self, data):
-
-        folded_data = data[np.argsort(new_mjd)]
+        magnitude = data[0]
+        time = data[1]
+        folded_data = magnitude[np.argsort(new_time)]
 
         sigma = np.std(folded_data)
         N = len(folded_data)
@@ -823,19 +815,20 @@ class Psi_eta(Base):
 
     def fit(self, data):
 
-        # folded_mjd = np.sort(new_mjd)
-        folded_data = data[np.argsort(new_mjd)]
+        # folded_time = np.sort(new_time)
+        magnitude = data[0]
+        folded_data = magnitude[np.argsort(new_time)]
 
-        # w = 1.0 / np.power(folded_mjd[1:]-folded_mjd[:-1] ,2)
+        # w = 1.0 / np.power(folded_time[1:]-folded_time[:-1] ,2)
         # w_mean = np.mean(w)
 
-        # N = len(folded_mjd)
+        # N = len(folded_time)
         # sigma2=np.var(folded_data)
 
         # S1 = sum(w*(folded_data[1:]-folded_data[:-1])**2)
         # S2 = sum(w)
 
-        # Psi_eta = w_mean * np.power(folded_mjd[N-1]-folded_mjd[0],2) * S1 /
+        # Psi_eta = w_mean * np.power(folded_time[N-1]-folded_time[0],2) * S1 /
         # (sigma2 * S2 * N**2)
 
         N = len(folded_data)
@@ -849,12 +842,9 @@ class Psi_eta(Base):
 
 class CAR_sigma(Base):
 
-    def __init__(self, entry):
+    def __init__(self):
 
         self.category = 'timeSeries'
-        self.N = len(entry[0])
-        self.error = entry[1].reshape((self.N, 1)) ** 2
-        self.mjd = entry[0].reshape((self.N, 1))
 
     def CAR_Lik(self, parameters, t, x, error_vars):
 
@@ -924,13 +914,13 @@ class CAR_sigma(Base):
         # the minus one is to perfor maximization using the minimize function
         return -loglik
 
-    def calculateCAR(self, mjd, data, error):
+    def calculateCAR(self, time, data, error):
         x0 = [10, 0.5]
         bnds = ((0, 100), (0, 100))
         # res = minimize(self.CAR_Lik, x0, args=(LC[:,0],LC[:,1],LC[:,2]) ,
             #method='nelder-mead',bounds = bnds)
 
-        res = minimize(self.CAR_Lik, x0, args=(mjd, data, error),
+        res = minimize(self.CAR_Lik, x0, args=(time, data, error),
                        method='nelder-mead', bounds=bnds)
         # options={'disp': True}
         sigma = res.x[0]
@@ -941,8 +931,13 @@ class CAR_sigma(Base):
         return CAR_sigma.tau
 
     def fit(self, data):
-        # LC = np.hstack((self.mjd , data.reshape((self.N,1)), self.error))
-        a = self.calculateCAR(self.mjd, data.reshape((self.N, 1)), self.error)
+        # LC = np.hstack((self.time , data.reshape((self.N,1)), self.error))
+        N = len(data[0])
+        magnitude = data[0].reshape((N, 1))
+        time = data[1].reshape((N, 1)) 
+        error = data[2].reshape((N, 1)) ** 2
+       
+        a = self.calculateCAR(time, magnitude, error)
 
         return a
 
@@ -968,58 +963,59 @@ class CAR_tmean(CAR_sigma):
 
     def fit(self, data):
 
+        magnitude = data[0]
         a = CAR_tmean()
-        return np.mean(data) / a.getAtt()
+        return np.mean(magnitude) / a.getAtt()
 
-class Harmonics(Base):
-    def __init__(self, mjd):
-        self.category = 'timeSeries'
-        if mjd is None:
-            print "please provide the measurement times to compute Harmonics"
-            sys.exit(1)
-        self.mjd = mjd
+# class Harmonics(Base):
+#     def __init__(self, time):
+#         self.category = 'timeSeries'
+#         if time is None:
+#             print "please provide the measurement times to compute Harmonics"
+#             sys.exit(1)
+#         self.time = time
 
-    def fit(self, data):
-        A = []
-        PH = []
+#     def fit(self, data):
+#         A = []
+#         PH = []
         
-        def model(x, a, b, c, freq):
-             return a*np.sin(2*np.pi*freq*x)+b*np.cos(2*np.pi*freq*x)+c
+#         def model(x, a, b, c, freq):
+#              return a*np.sin(2*np.pi*freq*x)+b*np.cos(2*np.pi*freq*x)+c
             
-        for i in range(3):
-            wk1, wk2, nout, jmax, prob = lomb.fasper(mjd2, data2, 6., 100.)
+#         for i in range(3):
+#             wk1, wk2, nout, jmax, prob = lomb.fasper(time2, data2, 6., 100.)
         
-            fundamental_freq = wk1[jmax]
+#             fundamental_freq = wk1[jmax]
             
-            # fit to a_i sin(2pi f_i t) + b_i cos(2 pi f_i t) + b_i,o
+#             # fit to a_i sin(2pi f_i t) + b_i cos(2 pi f_i t) + b_i,o
             
-            # a, b are the parameters we care about
-            # c is a constant offset
-            # f is the fundamental frequency
-            def yfunc(freq):
-                def func(x, a, b, c):
-                    return a*np.sin(2*np.pi*freq*x)+b*np.cos(2*np.pi*freq*x)+c
-                return func
+#             # a, b are the parameters we care about
+#             # c is a constant offset
+#             # f is the fundamental frequency
+#             def yfunc(freq):
+#                 def func(x, a, b, c):
+#                     return a*np.sin(2*np.pi*freq*x)+b*np.cos(2*np.pi*freq*x)+c
+#                 return func
             
-            Atemp = []
-            PHtemp = []
-            popts = []
+#             Atemp = []
+#             PHtemp = []
+#             popts = []
             
-            for j in range(4):
-                popt, pcov = optimize.curve_fit(yfunc((j+1)*fundamental_freq), mjd2, data2)
-                Atemp.append(np.sqrt(popt[0]**2+popt[1]**2))
-                PHtemp.append(np.arctan(popt[1] / popt[0]))
-                popts.append(popt)
+#             for j in range(4):
+#                 popt, pcov = optimize.curve_fit(yfunc((j+1)*fundamental_freq), time2, data2)
+#                 Atemp.append(np.sqrt(popt[0]**2+popt[1]**2))
+#                 PHtemp.append(np.arctan(popt[1] / popt[0]))
+#                 popts.append(popt)
             
-            A.append(Atemp)
-            PH.append(PHtemp)
+#             A.append(Atemp)
+#             PH.append(PHtemp)
             
-            for j in range(4):
-                data2 = np.array(data2) - model(mjd2, popts[j][0], popts[j][1], popts[j][2], (j+1)*fundamental_freq)
+#             for j in range(4):
+#                 data2 = np.array(data2) - model(time2, popts[j][0], popts[j][1], popts[j][2], (j+1)*fundamental_freq)
         
-        scaledPH = []
-        for ph in PH:
-            scaledPH.append(np.array(ph) - ph[0])
+#         scaledPH = []
+#         for ph in PH:
+#             scaledPH.append(np.array(ph) - ph[0])
 
-        return A, PH, scaledPH
+#         return A, PH, scaledPH
 
