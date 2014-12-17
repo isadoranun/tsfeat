@@ -66,11 +66,15 @@ class FeatureSpace:
                             else:
                                 if set(obj().Data).issubset(self.Data):
                                     self.featureList.append(name)
+                                else:
+                                    print obj().Data, "are needed for the calculation of ", name
                 else:               
                     for name, obj in inspect.getmembers(featureFunction):
                         if inspect.isclass(obj) and name != 'Base' and name in featureList:
                             if set(obj().Data).issubset(self.Data):
                                     self.featureList.append(name)
+                            else:
+                                print obj().Data, "are needed for the calculation of ", name
 
         else:
             self.featureList = featureList
