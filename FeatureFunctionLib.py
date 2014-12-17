@@ -18,7 +18,7 @@ class Amplitude(Base):
     """Half the difference between the maximum and the minimum magnitude"""
 
     def __init__(self):
-        self.category = 'basic'
+        self.Data = ['magnitude']
 
     def fit(self, data):
         magnitude = data[0]
@@ -31,7 +31,7 @@ class Amplitude(Base):
 class Rcs(Base):
     #Range of cumulative sum
     def __init__(self):
-        self.category = 'timeSeries'
+        self.Data = ['magnitude']
 
     def fit(self, data):
         magnitude = data[0]
@@ -45,7 +45,7 @@ class Rcs(Base):
 
 class StetsonK(Base):
     def __init__(self):
-        self.category = 'timeSeries'
+        self.Data = ['magnitude']
 
     def fit(self, data):
         magnitude = data[0]
@@ -63,7 +63,7 @@ class Automean(Base):
     """This is just a prototype, not a real feature"""
 
     def __init__(self, length = [0,0]):
-        self.category = 'basic'
+        self.Data = ['magnitude']
         
         self.length = length[0]
         self.length2 = length[1]
@@ -76,7 +76,7 @@ class Automean(Base):
 class Meanvariance(Base):
     """variability index"""
     def __init__(self):
-        self.category = 'basic'
+        self.Data = ['magnitude']
 
     def fit(self, data):
         magnitude = data[0]
@@ -86,7 +86,7 @@ class Meanvariance(Base):
 class Autocor_length(Base):
 
     def __init__(self, nlags = 100):
-        self.category = 'timeSeries'
+        self.Data = ['magnitude']
         self.nlags = nlags
 
     def fit(self, data):
@@ -106,7 +106,8 @@ class SlottedA_length(Base):
         k: lag (default: 1)
         T: tau (slot size in days. default: 4)
         """
-        self.category = 'timeSeries'
+        self.Data = ['magnitude','time']
+        
         SlottedA_length.SAC = []
 
         self.T = T
@@ -193,7 +194,7 @@ class StetsonK_AC(SlottedA_length):
 
     def __init__(self):
 
-        self.category = 'timeSeries'
+        self.Data = ['magnitude','time']
 
     def fit(self, data):
         a = StetsonK_AC()
@@ -213,7 +214,7 @@ class StetsonK_AC(SlottedA_length):
 
 class StetsonL(Base):
     def __init__(self):
-        self.category = 'timeSeries'
+        self.Data = ['magnitude','time','magnitude2']
 
     def fit(self, data):
 
@@ -251,7 +252,8 @@ class Con(Base):
     Pavlos not happy
     """
     def __init__(self, consecutiveStar=3):
-        self.category = 'timeSeries'
+        self.Data = ['magnitude']
+
         self.consecutiveStar = consecutiveStar
 
     def fit(self, data):
@@ -302,7 +304,7 @@ class Color(Base):
     mean(B1) - mean(B2)
     """
     def __init__(self):
-        self.category = 'timeSeries'
+        self.Data = ['magnitude','time','magnitude2']
         
 
     def fit(self, data):
@@ -319,7 +321,7 @@ class Beyond1Std(Base):
     """
 
     def __init__(self):
-        self.category = 'timeSeries'
+        self.Data = ['magnitude','error']
     
 
     def fit(self, data):
@@ -349,6 +351,7 @@ class SmallKurtosis(Base):
 
     def __init__(self):
         self.category = 'basic'
+        self.Data = ['magnitude']
 
     def fit(self, data):
         magnitude = data[0]
@@ -368,7 +371,7 @@ class Std(Base):
     """Standard deviation of the magnitudes"""
 
     def __init__(self):
-        self.category = 'basic'
+        self.Data = ['magnitude']
 
     def fit(self, data):
         magnitude = data[0]
@@ -379,7 +382,7 @@ class Skew(Base):
     """Skewness of the magnitudes"""
 
     def __init__(self):
-        self.category = 'basic'
+        self.Data = ['magnitude']
 
     def fit(self, data):
         magnitude = data[0]
@@ -390,7 +393,7 @@ class StetsonJ(Base):
     """Stetson (1996) variability index, a robust standard deviation"""
 
     def __init__(self):
-        self.category = 'timeSeries'
+        self.Data = ['magnitude','time','magnitude2']
 
     def fit(self, data):
         aligned_magnitude = data[4]
@@ -418,7 +421,7 @@ class MaxSlope(Base):
     """
 
     def __init__(self):
-        self.category = 'timeSeries'
+        self.Data = ['magnitude','time']
 
     def fit(self, data):
 
@@ -434,6 +437,7 @@ class MedianAbsDev(Base):
 
     def __init__(self):
         self.category = 'basic'
+        self.Data = ['magnitude']
 
     def fit(self, data):
         magnitude = data[0]
@@ -452,7 +456,7 @@ class MedianBRP(Base):
     """
 
     def __init__(self):
-        self.category = 'basic'
+        self.Data = ['magnitude']
 
     def fit(self, data):
         magnitude = data[0]
@@ -474,7 +478,7 @@ class PairSlopeTrend(Base):
     """
 
     def __init__(self):
-        self.category = 'timeSeries'
+        self.Data = ['magnitude']
 
     def fit(self, data):
         magnitude = data[0]
@@ -487,7 +491,7 @@ class PairSlopeTrend(Base):
 class FluxPercentileRatioMid20(Base):
 
     def __init__(self):
-        self.category = 'basic'
+        self.Data = ['magnitude']
 
     def fit(self, data):
         magnitude = data[0]
@@ -509,7 +513,7 @@ class FluxPercentileRatioMid20(Base):
 class FluxPercentileRatioMid35(Base):
 
     def __init__(self):
-        self.category = 'basic'
+        self.Data = ['magnitude']
 
     def fit(self, data):
         magnitude = data[0]
@@ -531,7 +535,7 @@ class FluxPercentileRatioMid35(Base):
 class FluxPercentileRatioMid50(Base):
 
     def __init__(self):
-        self.category = 'basic'
+        self.Data = ['magnitude']
 
     def fit(self, data):
         magnitude = data[0]
@@ -553,7 +557,7 @@ class FluxPercentileRatioMid50(Base):
 class FluxPercentileRatioMid65(Base):
 
     def __init__(self):
-        self.category = 'basic'
+        self.Data = ['magnitude']
 
     def fit(self, data):
         magnitude = data[0]
@@ -575,7 +579,7 @@ class FluxPercentileRatioMid65(Base):
 class FluxPercentileRatioMid80(Base):
 
     def __init__(self):
-        self.category = 'basic'
+        self.Data = ['magnitude']
 
     def fit(self, data):
         magnitude = data[0]
@@ -597,7 +601,7 @@ class FluxPercentileRatioMid80(Base):
 class PercentDifferenceFluxPercentile(Base):
 
     def __init__(self):
-        self.category = 'basic'
+        self.Data = ['magnitude']
 
     def fit(self, data):
         magnitude = data[0]
@@ -617,7 +621,7 @@ class PercentDifferenceFluxPercentile(Base):
 class PercentAmplitude(Base):
 
     def __init__(self):
-        self.category = 'basic'
+        self.Data = ['magnitude']
 
     def fit(self, data):
         magnitude = data[0]
@@ -633,7 +637,7 @@ class PercentAmplitude(Base):
 class LinearTrend(Base):
 
     def __init__(self):
-        self.category = 'timeSeries'
+        self.Data = ['magnitude','time']
 
     def fit(self, data):
         magnitude = data[0]
@@ -647,7 +651,7 @@ class Eta_color(Base):
 
     def __init__(self):
 
-        self.category = 'timeSeries'
+        self.Data = ['magnitude','time','magnitude2']
 
     def fit(self, data):
         aligned_magnitude = data[4]
@@ -680,7 +684,7 @@ class Eta_e(Base):
 
     def __init__(self):
 
-        self.category = 'timeSeries'
+        self.Data = ['magnitude','time']
 
     def fit(self, data):
 
@@ -705,7 +709,7 @@ class Mean(Base):
 
     def __init__(self):
 
-        self.category = 'basic'
+        self.Data = ['magnitude']
 
     def fit(self, data):
         magnitude = data[0]
@@ -718,7 +722,7 @@ class Q31(Base):
 
     def __init__(self):
 
-        self.category = 'basic'
+        self.Data = ['magnitude']
 
     def fit(self, data):
         magnitude = data[0]
@@ -729,7 +733,7 @@ class Q31_color(Base):
 
     def __init__(self):
 
-        self.category = 'timeSeries'
+        self.Data = ['magnitude','time','magnitude2']
 
     def fit(self, data):
         aligned_magnitude = data[4]
@@ -744,7 +748,7 @@ class AndersonDarling(Base):
 
     def __init__(self):
 
-        self.category = 'timeSeries'
+        self.Data = ['magnitude']
 
     def fit(self, data):
 
@@ -758,7 +762,7 @@ class PeriodLS(Base):
 
     def __init__(self, ofac = 6.):
 
-        self.category = 'timeSeries'
+        self.Data = ['magnitude','time']
         self.ofac = ofac;
 
     def fit(self, data):
@@ -780,7 +784,7 @@ class Period_fit(Base):
 
     def __init__(self):
 
-        self.category = 'timeSeries'
+        self.Data = ['magnitude','time']
 
     def fit(self, data):
 
@@ -791,7 +795,7 @@ class Psi_CS(Base):
 
     def __init__(self):
 
-        self.category = 'timeSeries'
+        self.Data = ['magnitude','time']
 
     def fit(self, data):
         magnitude = data[0]
@@ -811,7 +815,7 @@ class Psi_eta(Base):
 
     def __init__(self):
 
-        self.category = 'timeSeries'
+        self.Data = ['magnitude','time']
 
     def fit(self, data):
 
@@ -844,7 +848,7 @@ class CAR_sigma(Base):
 
     def __init__(self):
 
-        self.category = 'timeSeries'
+        self.Data = ['magnitude','time','error']
 
     def CAR_Lik(self, parameters, t, x, error_vars):
 
@@ -946,7 +950,7 @@ class CAR_tau(CAR_sigma):
 
     def __init__(self):
 
-        self.category = 'timeSeries'
+        self.Data = ['magnitude','time','error']
 
     def fit(self, data):
 
@@ -959,7 +963,7 @@ class CAR_tmean(CAR_sigma):
 
     def __init__(self):
 
-        self.category = 'timeSeries'
+        self.Data = ['magnitude','time','error']
 
     def fit(self, data):
 

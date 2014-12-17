@@ -12,18 +12,21 @@ import featureFunction
 
 class FeatureSpace:
     """
-    This Class is a wrapper class, to allow user select the category of
-    features, or specify a list of features.
+    This Class is a wrapper class, to allow user select the 
+    features based on the available time series vectors (magnitude, time,
+    error, second magnitude, etc.) or specify a list of features.
 
-    __init__ will take in a parameters of category and featureList.
-    User could specify category, which will output all the features
-    tag to this category.
+    __init__ will take in the list of the available data and featureList.
+
+    User could only specify the available time series vectors, which will
+    output all the features that need this data to be calculated.
 
     User could only specify featureList, which will output
     all the features in the list.
 
-    User could specify category and featureList, which will output
-    all the features in the category and List.
+    User could specify a list of the available time series vectors and 
+    featureList, which will output all the features in the List that
+    use the available data.
 
     Additional parameters are used for individual features.
     Format is featurename = [parameters]
@@ -38,31 +41,36 @@ class FeatureSpace:
     print a.result(method='dict')
 
     """
-    def __init__(self, category=None, featureList=None, **kwargs):
+    def __init__(self, Data=None, featureList=None, **kwargs):
         self.featureFunc = []
         self.featureList = []
 
-        if category is not None:
-            self.category = category
+        if Data is not None:
+            self.Data = Data
 
-            if self.category == 'all':
+            if self.Data == 'all':
                 for name, obj in inspect.getmembers(featureFunction):
-                    if inspect.isclass(obj) and name != 'Base':
-                        self.featureList.append(name)
+                    if inspect.isclass(obj) and name != 'Base' :
+                        # if set(obj().Data).issubset(self.Data):
+                            self.featureList.append(name)
 
             else:
-                for name, obj in inspect.getmembers(featureFunction):
-                    if inspect.isclass(obj) and name != 'Base':
-                        if name in kwargs.keys():
-                            if obj(kwargs[name]).category in self.category:
-                                self.featureList.append(name)
 
-                        else:
-                            if obj().category in self.category:
-                                self.featureList.append(name)
-            if featureList is not None:
-                for item in featureList:
-                    self.featureList.append(item)
+                if featureList is None:
+                    for name, obj in inspect.getmembers(featureFunction):
+                        if inspect.isclass(obj) and name != 'Base':
+                            if name in kwargs.keys():
+                                if set(obj(kwargs[name]).Data).issubset(self.Data):
+                                    self.featureList.append(name)
+
+                            else:
+                                if set(obj().Data).issubset(self.Data):
+                                    self.featureList.append(name)
+                else:               
+                    for name, obj in inspect.getmembers(featureFunction):
+                        if inspect.isclass(obj) and name != 'Base' and name in featureList:
+                            if set(obj().Data).issubset(self.Data):
+                                    self.featureList.append(name)
 
         else:
             self.featureList = featureList
