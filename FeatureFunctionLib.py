@@ -999,6 +999,8 @@ class freq1_harmonics_amplitude_0(Base):
         magnitude = data[0]
         time = data[1]
 
+        time = time - np.min(time)
+
         global A
         global PH
         global scaledPH
@@ -1011,11 +1013,12 @@ class freq1_harmonics_amplitude_0(Base):
         
         try:   
             for i in range(3):
-                # wk1, wk2, nout, jmax, prob = lomb.fasper(self.mjd, data, 6., 100.)
-            
-                # fundamental_freq = wk1[jmax]
+                
+                # fundamental_freq = period
 
-                fundamental_freq = period
+                wk1, wk2, nout, jmax, prob = lomb.fasper(time, magnitude, 6., 100.)
+    
+                fundamental_freq = wk1[jmax]
                 
                 # fit to a_i sin(2pi f_i t) + b_i cos(2 pi f_i t) + b_i,o
                 
@@ -1041,7 +1044,7 @@ class freq1_harmonics_amplitude_0(Base):
                 PH.append(PHtemp)
                 
                 for j in range(4):
-                    data2 = np.array(magnitude) - model(time, popts[j][0], popts[j][1], popts[j][2], (j+1)*fundamental_freq)
+                    magnitude = np.array(magnitude) - model(time, popts[j][0], popts[j][1], popts[j][2], (j+1)*fundamental_freq)
             
             for ph in PH:
                 scaledPH.append(np.array(ph) - ph[0])

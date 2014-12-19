@@ -1674,7 +1674,6 @@ div#notebook {
     });
     </script>
     <!-- End of mathjax configuration -->
-    
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -1737,6 +1736,16 @@ div#notebook {
         content: counters(item, ".")" ";
     }
 </style>
+
+
+
+
+
+
+
+
+
+
 
 <div class="cell border-box-sizing code_cell rendered">
 
@@ -4966,11 +4975,6 @@ AooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAP/9k=
 
 </div>
 
-
-
-
-
-
 <div class="cell border-box-sizing text_cell rendered">
 <div class="prompt input_prompt">
 </div>
@@ -4987,7 +4991,7 @@ AooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAP/9k=
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><center><strong>Authors:</strong> Isadora Nun, Pavlos Protopapas</p>
-<p><strong>Contributors:</strong> Karim Pichara, Rahul Dave, Daniel Acuña, Nicolás Castro, Cristobal Mackenzie, Andrés Riveros and Ming Zhu<center></p>
+<p><strong>Contributors:</strong> Karim Pichara, Rahul Dave, Daniel Acuña, Nicolás Castro, Cristobal Mackenzie, Andrés Riveros, Brandon Sim and Ming Zhu<center></p>
 </div>
 </div>
 </div>
@@ -25738,6 +25742,7 @@ def fit(self,data):
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>The library  allows the user to either choose the specific features of interest to be calculated or to calculate them all simultaneously. Nevertheless, as already mentioned, the features are divided depending on the input data  needed for their computation (magnitude, time, error, second data, etc.), this will be used as an automatic selection parameter. For example, if the user wants to calculate all the available features but he/she only has the vectors <em>magnitude</em> and <em>time</em>, solely the features that need <em>magnitude</em>, <em>time</em> or <em>magnitude</em> and <em>time</em> as an input will be computed.</p>
+<p><strong>Note:</strong> some features depend on other features and consequently must be computed together. For instance, <em>Period_fit</em> returns the false alarm probability of the estimated period. It is necessary then to calculate also the period <em>PeriodLS</em>.</p>
 <p>The list of all the possible features with their corresponding input data, additional parameters and literature source is presented in the following table: </p>
 </div>
 </div>
@@ -28253,7 +28258,7 @@ Every feature is described and tested with a suitable experiment to prove its va
 
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[27]:
+In&nbsp;[6]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -28279,7 +28284,7 @@ In&nbsp;[27]:
 
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[256]:
+In&nbsp;[7]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -28300,6 +28305,22 @@ In&nbsp;[256]:
 </div>
 
 
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt"></div>
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>-c:9: RuntimeWarning: covariance is not positive-semidefinite.
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+
 </div>
 
 
@@ -28307,7 +28328,7 @@ In&nbsp;[256]:
 
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[29]:
+In&nbsp;[8]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
@@ -31286,12 +31307,12 @@ $$ a_i = e^{-\left(t_i-t_{i-1}\right)/\tau} $$</p>
 
 <div class="input">
 <div class="prompt input_prompt">
-In&nbsp;[115]:
+In&nbsp;[32]:
 </div>
 <div class="inner_cell">
     <div class="input_area">
 <div class="highlight"><pre><span class="n">a</span> <span class="o">=</span> <span class="n">FATS</span><span class="o">.</span><span class="n">FeatureSpace</span><span class="p">(</span><span class="n">featureList</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;CAR_sigma&#39;</span><span class="p">,</span> <span class="s">&#39;CAR_tau&#39;</span><span class="p">,</span><span class="s">&#39;CAR_tmean&#39;</span><span class="p">])</span>
-<span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">calculateFeature</span><span class="p">(</span><span class="n">lc_normal</span><span class="p">)</span>
+<span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">calculateFeature</span><span class="p">(</span><span class="n">lc</span><span class="p">)</span>
 <span class="k">print</span> <span class="n">a</span><span class="o">.</span><span class="n">result</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s">&#39;dict&#39;</span><span class="p">)</span>
 </pre></div>
 
@@ -31307,9 +31328,166 @@ In&nbsp;[115]:
 
 <div class="output_area"><div class="prompt"></div>
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>{&apos;CAR_sigma&apos;: -4.3215542483107665, &apos;CAR_tmean&apos;: -0.13972002800342498, &apos;CAR_tau&apos;: 0.079912277896809131}
+<pre>{&apos;CAR_sigma&apos;: -0.21928049298842511, &apos;CAR_tmean&apos;: -9.230698873903961, &apos;CAR_tau&apos;: 0.64112037377348619}
 </pre>
 </div>
+</div>
+
+</div>
+</div>
+
+
+</div>
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="Periodic-features-extracted-from-light-curves-using-generalized-Lomb&#8211;Scargle-(Richards-et-al.,-2011)">Periodic features extracted from light-curves using generalized Lomb&#8211;Scargle (Richards et al., 2011)<a class="anchor-link" href="#Periodic-features-extracted-from-light-curves-using-generalized-Lomb&#8211;Scargle-(Richards-et-al.,-2011)">&#182;</a></h4>
+</div>
+</div>
+</div>
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Here, we adopt a model where the time series of the photometric magnitudes of variable stars is modeled as a superposition of sines and cosines:</p>
+<p>$$y_i(t|f_i) = a_i\sin(2\pi f_i t) + b_i\cos(2\pi f_i t) + b_{i,\circ}$$</p>
+<p>where $a$ and $b$ are normalization constants for the sinusoids of frequency $f_i$ and $b_{i,\circ}$ is the magnitude offset. </p>
+<p>To find periodic variations in the data, we fit the equation above by minimizing the sum of squares, which we denote $\chi^2$:</p>
+<p>\begin{equation}
+\chi^2 = \sum_k \frac{(d_k - y_i(t_k))^2}{\sigma_k^2}
+\end{equation}</p>
+<p>where $\sigma_k$ is the measurement uncertainty in data point $d_k$. We allow the mean to float, leading to more robust period estimates in the case where the periodic phase is not uniformly sampled; in these cases, the model light curve has a non-zero mean. This can be important when searching for periods on the order of the data span $T_{\textrm{tot}}$. Now, define</p>
+<p>\begin{equation}
+\chi^2_{\circ} = \sum_k \frac{(d_k - \mu)^2}{\sigma_k^2}
+\end{equation}</p>
+<p>where $\mu$ is the weighted mean</p>
+<p>\begin{equation}
+\mu = \frac{\sum_k d_k / \sigma_k^2}{\sum_k 1/\sigma_k^2}
+\end{equation}</p>
+<p>Then, the generalized Lomb-Scargle periodogram is:</p>
+<p>\begin{equation}
+P_f(f) = \frac{(N-1)}{2} \frac{\chi_{\circ}^2 - \chi_m^2(f)}{\chi_{\circ}^2}
+\end{equation}</p>
+<p>where $\chi_m^2(f)$ is $\chi^2$ minimized with respect to $a, b$, and $b_{\circ}$.</p>
+<p>Following Debosscher et al. (2007), we fit each light curve with a linear term plus a harmonic sum of sinusoids:</p>
+<p>\begin{equation}
+y(t) = ct + \sum_{i=1}^{3}\sum_{j=1}^{4} y_i(t|jf_i)
+\end{equation}</p>
+<p>where each of the three test frequencies $f_i$ is allowed to have four harmonics at frequencies $f_{i,j} = jf_i$. The three test frequencies $f_i$ are found iteratively, by successfully finding and removing periodic signal producing a peak in $P_f(f)$, where $P_f(f)$ is the Lomb-Scargle periodogram as defined above.</p>
+<p>Given a peak in $P_f(f)$, we whiten the data with respect to that frequency by fitting away a model containing that frequency as well as components with frequencies at 2, 3, and 4 times that fundamental frequency (harmonics). Then, we subtract that model from the data, update $\chi_{\circ}^2$, and recalculate $P_f(f)$ to find more periodic components.</p>
+<p>Algorithm:</p>
+<p>1) For i = {1, 2, 3}:</p>
+<p>2) Calculate Lomb-Scargle periodogram $P_f(f)$ for light curve.</p>
+<p>3) Find peak in $P_f(f)$, subtract that model from data.</p>
+<p>4) Update $\chi_{\circ}^2$, return to Step 1.</p>
+<p>Then, the features extracted are given as an amplitude and a phase:</p>
+<p>\begin{align}
+A_{i,j} &amp;= \sqrt{a_{i,j}^2 + b_{i,j}^2}\\
+\textrm{PH}_{i,j} &amp;= \arctan\left(\frac{b_{i,j}}{a_{i,j}}\right)
+\end{align}</p>
+<p>where $A_{i,j}$ is the amplitude of the $j$th harmonic of the $i$th frequency component and $\textrm{PH}_{i,j}$ is the phase component, which we then correct to a relative phase with respect to the phase of the first component:</p>
+<p>\begin{equation}
+\textrm{PH}'_{i,j} = \textrm{PH}_{i,j} - \textrm{PH}_{00}
+\end{equation}</p>
+<p>and remapped to $|-\pi, +\pi|$.</p>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h5 id="Amplitudes-$A_{i,j}$">Amplitudes $A_{i,j}$<a class="anchor-link" href="#Amplitudes-$A_{i,j}$">&#182;</a></h5>
+</div>
+</div>
+</div>
+
+
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="input">
+<div class="prompt input_prompt">
+In&nbsp;[21]:
+</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight"><pre><span class="n">a</span> <span class="o">=</span> <span class="n">FATS</span><span class="o">.</span><span class="n">FeatureSpace</span><span class="p">(</span><span class="n">featureList</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;PeriodLS&#39;</span><span class="p">,</span><span class="s">&#39;freq1_harmonics_amplitude_0&#39;</span><span class="p">,</span><span class="s">&#39;freq1_harmonics_amplitude_1&#39;</span><span class="p">,</span><span class="s">&#39;freq1_harmonics_amplitude_2&#39;</span><span class="p">,</span><span class="s">&#39;freq1_harmonics_amplitude_3&#39;</span><span class="p">,</span><span class="s">&#39;freq2_harmonics_amplitude_0&#39;</span><span class="p">,</span><span class="s">&#39;freq2_harmonics_amplitude_1&#39;</span><span class="p">,</span><span class="s">&#39;freq2_harmonics_amplitude_2&#39;</span><span class="p">,</span><span class="s">&#39;freq2_harmonics_amplitude_3&#39;</span><span class="p">,</span><span class="s">&#39;freq3_harmonics_amplitude_0&#39;</span><span class="p">,</span><span class="s">&#39;freq3_harmonics_amplitude_1&#39;</span><span class="p">,</span><span class="s">&#39;freq3_harmonics_amplitude_2&#39;</span><span class="p">,</span><span class="s">&#39;freq3_harmonics_amplitude_3&#39;</span><span class="p">])</span>
+<span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">calculateFeature</span><span class="p">(</span><span class="n">lc_periodic</span><span class="p">)</span>
+<span class="n">Table</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">
+    Out[21]:</div>
+
+<div class="output_html rendered_html output_subarea output_pyout">
+<table border="1" cellpadding="3" cellspacing="0"  style="border:1px solid black;border-collapse:collapse;"><tr><td  style="background-color:LightGray;"><b>Feature</b></td><td  style="background-color:LightGray;"><b>Value</b></td></tr><tr><td  style="background-color:Ivory;">PeriodLS</td><td  style="background-color:Ivory;">19.80000</td></tr><tr><td  style="background-color:AliceBlue;">freq1_harmonics_amplitude_0</td><td  style="background-color:AliceBlue;">0.61372</td></tr><tr><td  style="background-color:Ivory;">freq1_harmonics_amplitude_1</td><td  style="background-color:Ivory;">0.32036</td></tr><tr><td  style="background-color:AliceBlue;">freq1_harmonics_amplitude_2</td><td  style="background-color:AliceBlue;">0.05840</td></tr><tr><td  style="background-color:Ivory;">freq1_harmonics_amplitude_3</td><td  style="background-color:Ivory;">0.01890</td></tr><tr><td  style="background-color:AliceBlue;">freq2_harmonics_amplitude_0</td><td  style="background-color:AliceBlue;">0.05377</td></tr><tr><td  style="background-color:Ivory;">freq2_harmonics_amplitude_1</td><td  style="background-color:Ivory;">0.00345</td></tr><tr><td  style="background-color:AliceBlue;">freq2_harmonics_amplitude_2</td><td  style="background-color:AliceBlue;">0.00100</td></tr><tr><td  style="background-color:Ivory;">freq2_harmonics_amplitude_3</td><td  style="background-color:Ivory;">0.00053</td></tr><tr><td  style="background-color:AliceBlue;">freq3_harmonics_amplitude_0</td><td  style="background-color:AliceBlue;">0.04222</td></tr><tr><td  style="background-color:Ivory;">freq3_harmonics_amplitude_1</td><td  style="background-color:Ivory;">0.00431</td></tr><tr><td  style="background-color:AliceBlue;">freq3_harmonics_amplitude_2</td><td  style="background-color:AliceBlue;">0.00487</td></tr><tr><td  style="background-color:Ivory;">freq3_harmonics_amplitude_3</td><td  style="background-color:Ivory;">0.00127</td></tr></table>
+</div>
+
+</div>
+
+</div>
+</div>
+
+
+</div>
+
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h5 id="Phase-components-$PH_{I,j}$">Phase components $PH_{I,j}$<a class="anchor-link" href="#Phase-components-$PH_{I,j}$">&#182;</a></h5>
+</div>
+</div>
+</div>
+
+
+<div class="cell border-box-sizing code_cell rendered">
+
+<div class="input">
+<div class="prompt input_prompt">
+In&nbsp;[23]:
+</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class="highlight"><pre><span class="n">a</span> <span class="o">=</span> <span class="n">FATS</span><span class="o">.</span><span class="n">FeatureSpace</span><span class="p">(</span><span class="n">featureList</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;PeriodLS&#39;</span><span class="p">,</span><span class="s">&#39;freq1_harmonics_amplitude_0&#39;</span><span class="p">,</span><span class="s">&#39;freq1_harmonics_rel_phase_0&#39;</span><span class="p">,</span><span class="s">&#39;freq1_harmonics_rel_phase_1&#39;</span><span class="p">,</span><span class="s">&#39;freq1_harmonics_rel_phase_2&#39;</span><span class="p">,</span><span class="s">&#39;freq1_harmonics_rel_phase_3&#39;</span><span class="p">,</span><span class="s">&#39;freq2_harmonics_rel_phase_0&#39;</span><span class="p">,</span><span class="s">&#39;freq2_harmonics_rel_phase_1&#39;</span><span class="p">,</span><span class="s">&#39;freq2_harmonics_rel_phase_2&#39;</span><span class="p">,</span><span class="s">&#39;freq2_harmonics_rel_phase_3&#39;</span><span class="p">,</span><span class="s">&#39;freq3_harmonics_rel_phase_0&#39;</span><span class="p">,</span><span class="s">&#39;freq3_harmonics_rel_phase_1&#39;</span><span class="p">,</span><span class="s">&#39;freq3_harmonics_rel_phase_2&#39;</span><span class="p">,</span><span class="s">&#39;freq3_harmonics_rel_phase_3&#39;</span><span class="p">])</span>
+<span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">calculateFeature</span><span class="p">(</span><span class="n">lc_periodic</span><span class="p">)</span>
+<span class="n">Table</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area"><div class="prompt output_prompt">
+    Out[23]:</div>
+
+<div class="output_html rendered_html output_subarea output_pyout">
+<table border="1" cellpadding="3" cellspacing="0"  style="border:1px solid black;border-collapse:collapse;"><tr><td  style="background-color:LightGray;"><b>Feature</b></td><td  style="background-color:LightGray;"><b>Value</b></td></tr><tr><td  style="background-color:Ivory;">PeriodLS</td><td  style="background-color:Ivory;">19.80000</td></tr><tr><td  style="background-color:AliceBlue;">freq1_harmonics_amplitude_0</td><td  style="background-color:AliceBlue;">0.61372</td></tr><tr><td  style="background-color:Ivory;">freq1_harmonics_rel_phase_0</td><td  style="background-color:Ivory;">0.00000</td></tr><tr><td  style="background-color:AliceBlue;">freq1_harmonics_rel_phase_1</td><td  style="background-color:AliceBlue;">-0.29219</td></tr><tr><td  style="background-color:Ivory;">freq1_harmonics_rel_phase_2</td><td  style="background-color:Ivory;">0.35478</td></tr><tr><td  style="background-color:AliceBlue;">freq1_harmonics_rel_phase_3</td><td  style="background-color:AliceBlue;">-1.12416</td></tr><tr><td  style="background-color:Ivory;">freq2_harmonics_rel_phase_0</td><td  style="background-color:Ivory;">0.00000</td></tr><tr><td  style="background-color:AliceBlue;">freq2_harmonics_rel_phase_1</td><td  style="background-color:AliceBlue;">1.83071</td></tr><tr><td  style="background-color:Ivory;">freq2_harmonics_rel_phase_2</td><td  style="background-color:Ivory;">1.56382</td></tr><tr><td  style="background-color:AliceBlue;">freq2_harmonics_rel_phase_3</td><td  style="background-color:AliceBlue;">1.95567</td></tr><tr><td  style="background-color:Ivory;">freq3_harmonics_rel_phase_0</td><td  style="background-color:Ivory;">0.00000</td></tr><tr><td  style="background-color:AliceBlue;">freq3_harmonics_rel_phase_1</td><td  style="background-color:AliceBlue;">-2.31838</td></tr><tr><td  style="background-color:Ivory;">freq3_harmonics_rel_phase_2</td><td  style="background-color:Ivory;">-1.01172</td></tr><tr><td  style="background-color:AliceBlue;">freq3_harmonics_rel_phase_3</td><td  style="background-color:AliceBlue;">-0.89479</td></tr></table>
+</div>
+
 </div>
 
 </div>
@@ -33149,9 +33327,7 @@ In&nbsp;[]:
 <!-- hitwebcounter.com --><a href="http://www.hitwebcounter.com/" title="Known Total Visitors" 
 target="_blank" style="font-family: Geneva, Arial, Helvetica; 
 font-size: 9px; color: #76766B; text-decoration: none ;"><strong>Known Total Visitors</strong>
-</a>   
-   
-  
+</a>  
 
 </div>
 
@@ -33159,4 +33335,3 @@ font-size: 9px; color: #76766B; text-decoration: none ;"><strong>Known Total Vis
   </div>
 </body>
 </html>
-
