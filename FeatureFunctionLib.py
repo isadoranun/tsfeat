@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 from scipy import stats
 from scipy.optimize import minimize
+from scipy.optimize import curve_fit
 from statsmodels.tsa import stattools
 
 from Base import Base
@@ -772,9 +773,11 @@ class PeriodLS(Base):
 
         global new_time
         global prob
+        global period
 
         fx, fy, nout, jmax, prob = lomb.fasper(time, magnitude, self.ofac, 100.)
-        T = 1.0 / fx[jmax]
+        period = fx[jmax]
+        T = 1.0 / period
         new_time = np.mod(time, 2 * T) / (2 * T)
 
         return T
@@ -788,7 +791,10 @@ class Period_fit(Base):
 
     def fit(self, data):
 
-        return prob
+        try:
+            return prob
+        except:    
+            print "error: please run PeriodLS first to generate values for Period_fit"
 
 
 class Psi_CS(Base):
@@ -798,17 +804,21 @@ class Psi_CS(Base):
         self.Data = ['magnitude','time']
 
     def fit(self, data):
-        magnitude = data[0]
-        time = data[1]
-        folded_data = magnitude[np.argsort(new_time)]
+        
+        try:
+            magnitude = data[0]
+            time = data[1]
+            folded_data = magnitude[np.argsort(new_time)]
 
-        sigma = np.std(folded_data)
-        N = len(folded_data)
-        m = np.mean(folded_data)
-        s = np.cumsum(folded_data - m) * 1.0 / (N * sigma)
-        R = np.max(s) - np.min(s)
+            sigma = np.std(folded_data)
+            N = len(folded_data)
+            m = np.mean(folded_data)
+            s = np.cumsum(folded_data - m) * 1.0 / (N * sigma)
+            R = np.max(s) - np.min(s)
 
-        return R
+            return R
+        except:
+            print "error: please run PeriodLS first to generate values for Psi_CS"
 
 
 class Psi_eta(Base):
@@ -820,28 +830,31 @@ class Psi_eta(Base):
     def fit(self, data):
 
         # folded_time = np.sort(new_time)
-        magnitude = data[0]
-        folded_data = magnitude[np.argsort(new_time)]
+        try:
+            magnitude = data[0]
+            folded_data = magnitude[np.argsort(new_time)]
 
-        # w = 1.0 / np.power(folded_time[1:]-folded_time[:-1] ,2)
-        # w_mean = np.mean(w)
+            # w = 1.0 / np.power(folded_time[1:]-folded_time[:-1] ,2)
+            # w_mean = np.mean(w)
 
-        # N = len(folded_time)
-        # sigma2=np.var(folded_data)
+            # N = len(folded_time)
+            # sigma2=np.var(folded_data)
 
-        # S1 = sum(w*(folded_data[1:]-folded_data[:-1])**2)
-        # S2 = sum(w)
+            # S1 = sum(w*(folded_data[1:]-folded_data[:-1])**2)
+            # S2 = sum(w)
 
-        # Psi_eta = w_mean * np.power(folded_time[N-1]-folded_time[0],2) * S1 /
-        # (sigma2 * S2 * N**2)
+            # Psi_eta = w_mean * np.power(folded_time[N-1]-folded_time[0],2) * S1 /
+            # (sigma2 * S2 * N**2)
 
-        N = len(folded_data)
-        sigma2 = np.var(folded_data)
+            N = len(folded_data)
+            sigma2 = np.var(folded_data)
 
-        Psi_eta = (1.0 / ((N - 1) * sigma2) *
-                   np.sum(np.power(folded_data[1:] - folded_data[:-1], 2)))
+            Psi_eta = (1.0 / ((N - 1) * sigma2) *
+                       np.sum(np.power(folded_data[1:] - folded_data[:-1], 2)))
 
-        return Psi_eta
+            return Psi_eta
+        except:
+            print "error: please run PeriodLS first to generate values for Psi_eta"
 
 
 class CAR_sigma(Base):
@@ -919,6 +932,7 @@ class CAR_sigma(Base):
         return -loglik
 
     def calculateCAR(self, time, data, error):
+
         x0 = [10, 0.5]
         bnds = ((0, 100), (0, 100))
         # res = minimize(self.CAR_Lik, x0, args=(LC[:,0],LC[:,1],LC[:,2]) ,
@@ -928,14 +942,16 @@ class CAR_sigma(Base):
                        method='nelder-mead', bounds=bnds)
         # options={'disp': True}
         sigma = res.x[0]
-        CAR_sigma.tau = res.x[1]
+        global tau
+        tau = res.x[1]
         return sigma
 
-    def getAtt(self):
-        return CAR_sigma.tau
+    # def getAtt(self):
+    #     return CAR_sigma.tau
 
     def fit(self, data):
         # LC = np.hstack((self.time , data.reshape((self.N,1)), self.error))
+
         N = len(data[0])
         magnitude = data[0].reshape((N, 1))
         time = data[1].reshape((N, 1)) 
@@ -946,7 +962,7 @@ class CAR_sigma(Base):
         return a
 
 
-class CAR_tau(CAR_sigma):
+class CAR_tau(Base):
 
     def __init__(self):
 
@@ -954,72 +970,340 @@ class CAR_tau(CAR_sigma):
 
     def fit(self, data):
 
-        a = CAR_tau()
+        try:
+            return tau
+        except:
+            print "error: please run CAR_sigma first to generate values for CAR_tau"
 
-        return a.getAtt()
 
-
-class CAR_tmean(CAR_sigma):
+class CAR_tmean(Base):
 
     def __init__(self):
 
         self.Data = ['magnitude','time','error']
 
     def fit(self, data):
-
+        
         magnitude = data[0]
-        a = CAR_tmean()
-        return np.mean(magnitude) / a.getAtt()
 
-# class Harmonics(Base):
-#     def __init__(self, time):
-#         self.category = 'timeSeries'
-#         if time is None:
-#             print "please provide the measurement times to compute Harmonics"
-#             sys.exit(1)
-#         self.time = time
+        try:
+            return np.mean(magnitude) / tau
+        except:
+            print "error: please run CAR_sigma first to generate values for CAR_tmean"
+            
+class freq1_harmonics_amplitude_0(Base):
+    def __init__(self):
+        self.Data = ['magnitude','time']
 
-#     def fit(self, data):
-#         A = []
-#         PH = []
+    def fit(self, data):
+        magnitude = data[0]
+        time = data[1]
+
+        global A
+        global PH
+        global scaledPH
+        A = []
+        PH = []
+        scaledPH = []
         
-#         def model(x, a, b, c, freq):
-#              return a*np.sin(2*np.pi*freq*x)+b*np.cos(2*np.pi*freq*x)+c
-            
-#         for i in range(3):
-#             wk1, wk2, nout, jmax, prob = lomb.fasper(time2, data2, 6., 100.)
+        def model(x, a, b, c, freq):
+             return a*np.sin(2*np.pi*freq*x)+b*np.cos(2*np.pi*freq*x)+c
         
-#             fundamental_freq = wk1[jmax]
+        try:   
+            for i in range(3):
+                # wk1, wk2, nout, jmax, prob = lomb.fasper(self.mjd, data, 6., 100.)
             
-#             # fit to a_i sin(2pi f_i t) + b_i cos(2 pi f_i t) + b_i,o
+                # fundamental_freq = wk1[jmax]
+
+                fundamental_freq = period
+                
+                # fit to a_i sin(2pi f_i t) + b_i cos(2 pi f_i t) + b_i,o
+                
+                # a, b are the parameters we care about
+                # c is a constant offset
+                # f is the fundamental frequency
+                def yfunc(freq):
+                    def func(x, a, b, c):
+                        return a*np.sin(2*np.pi*freq*x)+b*np.cos(2*np.pi*freq*x)+c
+                    return func
+                
+                Atemp = []
+                PHtemp = []
+                popts = []
+                
+                for j in range(4):
+                    popt, pcov = curve_fit(yfunc((j+1)*fundamental_freq), time, magnitude)
+                    Atemp.append(np.sqrt(popt[0]**2+popt[1]**2))
+                    PHtemp.append(np.arctan(popt[1] / popt[0]))
+                    popts.append(popt)
+                
+                A.append(Atemp)
+                PH.append(PHtemp)
+                
+                for j in range(4):
+                    data2 = np.array(magnitude) - model(time, popts[j][0], popts[j][1], popts[j][2], (j+1)*fundamental_freq)
             
-#             # a, b are the parameters we care about
-#             # c is a constant offset
-#             # f is the fundamental frequency
-#             def yfunc(freq):
-#                 def func(x, a, b, c):
-#                     return a*np.sin(2*np.pi*freq*x)+b*np.cos(2*np.pi*freq*x)+c
-#                 return func
-            
-#             Atemp = []
-#             PHtemp = []
-#             popts = []
-            
-#             for j in range(4):
-#                 popt, pcov = optimize.curve_fit(yfunc((j+1)*fundamental_freq), time2, data2)
-#                 Atemp.append(np.sqrt(popt[0]**2+popt[1]**2))
-#                 PHtemp.append(np.arctan(popt[1] / popt[0]))
-#                 popts.append(popt)
-            
-#             A.append(Atemp)
-#             PH.append(PHtemp)
-            
-#             for j in range(4):
-#                 data2 = np.array(data2) - model(time2, popts[j][0], popts[j][1], popts[j][2], (j+1)*fundamental_freq)
+            for ph in PH:
+                scaledPH.append(np.array(ph) - ph[0])
+
+            return A[0][0]
+        except:
+            print "error: please run PeriodLS first to generate values for all harmonics"
+
+
+
+class freq1_harmonics_amplitude_1(Base):
+    def __init__(self):
         
-#         scaledPH = []
-#         for ph in PH:
-#             scaledPH.append(np.array(ph) - ph[0])
+        self.Data = ['magnitude','time']
 
-#         return A, PH, scaledPH
+    def fit(self, data):
 
+        try:
+            return A[0][1]
+        except:
+            print "error: please run freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+
+class freq1_harmonics_amplitude_2(Base):
+    def __init__(self):
+        
+        self.Data = ['magnitude','time']
+
+    def fit(self, data):
+
+        try:
+            return A[0][2]
+        except:
+            print "error: please run freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+
+class freq1_harmonics_amplitude_3(Base):
+    def __init__(self):
+        
+        self.Data = ['magnitude','time']
+
+    def fit(self, data):
+        try:
+            return A[0][3]
+        except:
+            print "error: please run freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+
+class freq2_harmonics_amplitude_0(Base):
+    def __init__(self):
+        
+        self.Data = ['magnitude','time']
+
+    def fit(self, data):
+        try:
+            return A[1][0]
+        except:
+            print "error: please run freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+
+class freq2_harmonics_amplitude_1(Base):
+    def __init__(self):
+         
+         self.Data = ['magnitude','time']
+
+    def fit(self, data):
+        try:
+            return A[1][1]
+        except:
+            print "error: please run freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+
+class freq2_harmonics_amplitude_2(Base):
+    def __init__(self):
+
+        self.Data = ['magnitude','time']
+
+    def fit(self, data):
+        try:
+            return A[1][2]
+        except:
+            print "error: please run freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+
+class freq2_harmonics_amplitude_3(Base):
+    def __init__(self):
+
+        self.Data = ['magnitude','time']
+
+    def fit(self, data):
+        try:
+            return A[1][3]
+        except:
+            print "error: please run freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+
+class freq3_harmonics_amplitude_0(Base):
+    def __init__(self):
+        
+        self.Data = ['magnitude','time']
+
+    def fit(self, data):
+        try:
+            return A[2][0]
+        except:
+            print "error: please run freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+
+class freq3_harmonics_amplitude_1(Base):
+    def __init__(self):
+        
+        self.Data = ['magnitude','time']
+
+    def fit(self, data):
+        try:
+            return A[2][1]
+        except:
+            print "error: please run freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+
+class freq3_harmonics_amplitude_2(Base):
+    def __init__(self):
+
+        self.Data = ['magnitude','time']
+
+    def fit(self, data):
+        try:
+            return A[2][2]
+        except:
+            print "error: please run freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+
+class freq3_harmonics_amplitude_3(Base):
+    def __init__(self):
+
+        self.Data = ['magnitude','time']
+
+    def fit(self, data):
+        try:
+            return A[2][3]
+        except:
+            print "error: please run freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+
+class freq1_harmonics_rel_phase_0(Base):
+    def __init__(self):
+
+        self.Data = ['magnitude','time']
+
+    def fit(self, data):
+        try:
+            return scaledPH[0][0]
+        except:
+            print "error: please run freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+
+class freq1_harmonics_rel_phase_1(Base):
+    def __init__(self):
+
+        self.Data = ['magnitude','time']
+
+    def fit(self, data):
+        try:
+            return scaledPH[0][1]
+        except:
+            print "error: please run freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+
+class freq1_harmonics_rel_phase_2(Base):
+    def __init__(self):
+
+        self.Data = ['magnitude','time']
+
+    def fit(self, data):
+        try:
+            return scaledPH[0][2]
+        except:
+            print "error: please run freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+
+class freq1_harmonics_rel_phase_3(Base):
+    def __init__(self):
+
+        self.Data = ['magnitude','time']
+
+    def fit(self, data):
+        try:
+            return scaledPH[0][3]
+        except:
+            print "error: please run freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+
+class freq2_harmonics_rel_phase_0(Base):
+    def __init__(self):
+        self.category = 'timeSeries'
+
+        self.Data = ['magnitude','time']
+
+    def fit(self, data):
+        try:
+            return scaledPH[1][0]
+        except:
+            print "error: please run freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+
+class freq2_harmonics_rel_phase_1(Base):
+    def __init__(self):
+
+        self.Data = ['magnitude','time']
+
+    def fit(self, data):
+        try:
+            return scaledPH[1][1]
+        except:
+            print "error: please run freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+
+class freq2_harmonics_rel_phase_2(Base):
+    def __init__(self):
+
+        self.Data = ['magnitude','time']
+
+    def fit(self, data):
+        try:
+            return scaledPH[1][2]
+        except:
+            print "error: please run freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+
+class freq2_harmonics_rel_phase_3(Base):
+    def __init__(self):
+
+        self.Data = ['magnitude','time']
+
+    def fit(self, data):
+        try:
+            return scaledPH[1][3]
+        except:
+            print "error: please run freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+
+class freq3_harmonics_rel_phase_0(Base):
+    def __init__(self):
+
+        self.Data = ['magnitude','time']
+
+    def fit(self, data):
+        try:
+            return scaledPH[2][0]
+        except:
+            print "error: please run freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+
+class freq3_harmonics_rel_phase_1(Base):
+    def __init__(self):
+
+        self.Data = ['magnitude','time']
+
+    def fit(self, data):
+        try:
+            return scaledPH[2][1]
+        except:
+            print "error: please run freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+
+class freq3_harmonics_rel_phase_2(Base):
+    def __init__(self):
+
+        self.Data = ['magnitude','time']
+
+    def fit(self, data):
+        try:
+            return scaledPH[2][2]
+        except:
+            print "error: please run freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+
+class freq3_harmonics_rel_phase_3(Base):
+    def __init__(self):
+ 
+         self.Data = ['magnitude','time']
+
+    def fit(self, data):
+        try:
+            return scaledPH[2][3]
+        except:
+            print "error: please run freq1_harmonics_amplitude_0 first to generate values for all harmonics"
