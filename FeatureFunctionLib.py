@@ -86,14 +86,21 @@ class Meanvariance(Base):
 
 class Autocor_length(Base):
 
-    def __init__(self, nlags = 100):
+    def __init__(self, lags = 100):
         self.Data = ['magnitude']
-        self.nlags = nlags
+        self.nlags = lags
 
     def fit(self, data):
+
         magnitude = data[0]
-        AC = stattools.acf(magnitude, self.nlags)
+        AC = stattools.acf(magnitude, nlags = self.nlags)
         k = next((index for index, value in
+                 enumerate(AC) if value < np.exp(-1)), None)
+
+        while k is None:
+            self.nlags = self.nlags + 100
+            AC = stattools.acf(magnitude, nlags = self.nlags)
+            k = next((index for index, value in
                  enumerate(AC) if value < np.exp(-1)), None)
 
         return k
@@ -174,8 +181,8 @@ class SlottedA_length(Base):
 
 
         # T=4
-        K1 = 100
-        [SAC, slots] = self.slotted_autocorrelation(magnitude, time, self.T, K1)
+        K = 100
+        [SAC, slots] = self.slotted_autocorrelation(magnitude, time, self.T, K)
         SlottedA_length.SAC = SAC
         SlottedA_length.slots = slots
 
@@ -183,11 +190,11 @@ class SlottedA_length(Base):
         k = next((index for index, value in
                  enumerate(SAC2) if value < np.exp(-1)), None)
 
-        if k is None:
-            K2 = 200
+        while k is None:
+            K = K+K
             [SAC, slots] = self.slotted_autocorrelation(magnitude, time, self.T,
-                                                        K2, second_round=True,
-                                                        K1=K1)
+                                                    K, second_round=True,
+                                                    K1=K/2)
             SAC2 = SAC[slots]
             k = next((index for index, value in
                      enumerate(SAC2) if value < np.exp(-1)), None)
