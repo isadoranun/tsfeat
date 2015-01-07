@@ -49,10 +49,18 @@ class FeatureSpace:
             self.Data = Data
 
             if self.Data == 'all':
-                for name, obj in inspect.getmembers(featureFunction):
-                    if inspect.isclass(obj) and name != 'Base' :
-                        # if set(obj().Data).issubset(self.Data):
-                            self.featureList.append(name)
+                if featureList == None:
+                    for name, obj in inspect.getmembers(featureFunction):
+                        if inspect.isclass(obj) and name != 'Base' :
+                            # if set(obj().Data).issubset(self.Data):
+                                self.featureList.append(name)
+                else:
+                    for feature in featureList:
+                        for name, obj in inspect.getmembers(featureFunction):
+                            if name != 'Base':
+                                if inspect.isclass(obj) and feature == name: 
+                                    self.featureList.append(name)
+                                    
 
             else:
 
@@ -68,14 +76,19 @@ class FeatureSpace:
                                     self.featureList.append(name)
                                 else:
                                     print "Warning: the feature", name, "could not be calculated because", obj().Data, "are needed."
-                else:               
-                    for name, obj in inspect.getmembers(featureFunction):
-                        if inspect.isclass(obj) and name != 'Base' and name in featureList:
-                            if set(obj().Data).issubset(self.Data):
-                                    self.featureList.append(name)
-                            else:
-                                print "Warning: the feature", name, "could not be calculated because", obj().Data, "are needed."
+                else:
 
+                    for feature in featureList:
+                        for name, obj in inspect.getmembers(featureFunction):
+                            if name != 'Base':
+                                if inspect.isclass(obj) and feature == name: 
+                                    if set(obj().Data).issubset(self.Data):
+                                        self.featureList.append(name)
+                                    else:
+                                        print "Warning: the feature", name, "could not be calculated because", obj().Data, "are needed."
+                            
+
+                    
         else:
             self.featureList = featureList
 
