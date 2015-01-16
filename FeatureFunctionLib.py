@@ -60,20 +60,6 @@ class StetsonK(Base):
         return K
 
 
-class Automean(Base):
-    """This is just a prototype, not a real feature"""
-
-    def __init__(self, length = [0,0]):
-        self.Data = ['magnitude']
-        
-        self.length = length[0]
-        self.length2 = length[1]
-
-    def fit(self, data):
-        magnitude = data[0]        
-        return np.mean(magnitude) + self.length + self.length2
-
-
 class Meanvariance(Base):
     """variability index"""
     def __init__(self):
@@ -183,10 +169,12 @@ class SlottedA_length(Base):
         # T=4
         K = 100
         [SAC, slots] = self.slotted_autocorrelation(magnitude, time, self.T, K)
-        SlottedA_length.SAC = SAC
-        SlottedA_length.slots = slots
+        # SlottedA_length.SAC = SAC
+        # SlottedA_length.slots = slots
 
         SAC2 = SAC[slots]
+        SlottedA_length.autocor_vector = SAC2
+
         k = next((index for index, value in
                  enumerate(SAC2) if value < np.exp(-1)), None)
 
@@ -202,8 +190,8 @@ class SlottedA_length(Base):
         return slots[k] * self.T
 
     def getAtt(self):
-        return SlottedA_length.SAC, SlottedA_length.slots
-
+        # return SlottedA_length.SAC, SlottedA_length.slots
+        return SlottedA_length.autocor_vector
 
 class StetsonK_AC(SlottedA_length):
 
@@ -212,19 +200,28 @@ class StetsonK_AC(SlottedA_length):
         self.Data = ['magnitude','time']
 
     def fit(self, data):
-        a = StetsonK_AC()
-        [autocor_vector, slots] = a.getAtt()
+        
+        try:
+        
+            a = StetsonK_AC()
+            # [autocor_vector, slots] = a.getAtt()
+            autocor_vector = a.getAtt()
 
-        autocor_vector = autocor_vector[slots]
-        N_autocor = len(autocor_vector)
-        sigmap = (np.sqrt(N_autocor * 1.0 / (N_autocor - 1)) *
-                 (autocor_vector - np.mean(autocor_vector)) /
-                  np.std(autocor_vector))
+            # autocor_vector = autocor_vector[slots]
+            N_autocor = len(autocor_vector)
+            sigmap = (np.sqrt(N_autocor * 1.0 / (N_autocor - 1)) *
+                     (autocor_vector - np.mean(autocor_vector)) /
+                      np.std(autocor_vector))
 
-        K = (1 / np.sqrt(N_autocor * 1.0) *
-             np.sum(np.abs(sigmap)) / np.sqrt(np.sum(sigmap ** 2)))
+            K = (1 / np.sqrt(N_autocor * 1.0) *
+                 np.sum(np.abs(sigmap)) / np.sqrt(np.sum(sigmap ** 2)))
 
-        return K
+            return K
+
+        except:
+
+            print "error: please run SlottedA_length first to generate values for StetsonK_AC "
+
 
 
 class StetsonL(Base):
