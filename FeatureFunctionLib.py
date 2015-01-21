@@ -987,7 +987,7 @@ class CAR_tau(Base):
             print "error: please run CAR_sigma first to generate values for CAR_tau"
 
 
-class CAR_tmean(Base):
+class CAR_mean(Base):
 
     def __init__(self):
 
@@ -1000,7 +1000,7 @@ class CAR_tmean(Base):
         try:
             return np.mean(magnitude) / tau
         except:
-            print "error: please run CAR_sigma first to generate values for CAR_tmean"
+            print "error: please run CAR_sigma first to generate values for CAR_mean"
             
 class Freq1_harmonics_amplitude_0(Base):
     def __init__(self):
@@ -1021,49 +1021,44 @@ class Freq1_harmonics_amplitude_0(Base):
         
         def model(x, a, b, c, Freq):
              return a*np.sin(2*np.pi*Freq*x)+b*np.cos(2*np.pi*Freq*x)+c
-        
-        try:   
-            for i in range(3):
-                
-                # fundamental_Freq = period
-
-                wk1, wk2, nout, jmax, prob = lomb.fasper(time, magnitude, 6., 100.)
-    
-                fundamental_Freq = wk1[jmax]
-                
-                # fit to a_i sin(2pi f_i t) + b_i cos(2 pi f_i t) + b_i,o
-                
-                # a, b are the parameters we care about
-                # c is a constant offset
-                # f is the fundamental Frequency
-                def yfunc(Freq):
-                    def func(x, a, b, c):
-                        return a*np.sin(2*np.pi*Freq*x)+b*np.cos(2*np.pi*Freq*x)+c
-                    return func
-                
-                Atemp = []
-                PHtemp = []
-                popts = []
-                
-                for j in range(4):
-                    popt, pcov = curve_fit(yfunc((j+1)*fundamental_Freq), time, magnitude)
-                    Atemp.append(np.sqrt(popt[0]**2+popt[1]**2))
-                    PHtemp.append(np.arctan(popt[1] / popt[0]))
-                    popts.append(popt)
-                
-                A.append(Atemp)
-                PH.append(PHtemp)
-                
-                for j in range(4):
-                    magnitude = np.array(magnitude) - model(time, popts[j][0], popts[j][1], popts[j][2], (j+1)*fundamental_Freq)
+          
+        for i in range(3):
             
-            for ph in PH:
-                scaledPH.append(np.array(ph) - ph[0])
+            wk1, wk2, nout, jmax, prob = lomb.fasper(time, magnitude, 6., 100.)
 
-            return A[0][0]
-        except:
-            print "error: please run PeriodLS first to generate values for all harmonics"
+            fundamental_Freq = wk1[jmax]
+            
+            # fit to a_i sin(2pi f_i t) + b_i cos(2 pi f_i t) + b_i,o
+            
+            # a, b are the parameters we care about
+            # c is a constant offset
+            # f is the fundamental Frequency
+            def yfunc(Freq):
+                def func(x, a, b, c):
+                    return a*np.sin(2*np.pi*Freq*x)+b*np.cos(2*np.pi*Freq*x)+c
+                return func
+            
+            Atemp = []
+            PHtemp = []
+            popts = []
+            
+            for j in range(4):
+                popt, pcov = curve_fit(yfunc((j+1)*fundamental_Freq), time, magnitude)
+                Atemp.append(np.sqrt(popt[0]**2+popt[1]**2))
+                PHtemp.append(np.arctan(popt[1] / popt[0]))
+                popts.append(popt)
+            
+            A.append(Atemp)
+            PH.append(PHtemp)
+            
+            for j in range(4):
+                magnitude = np.array(magnitude) - model(time, popts[j][0], popts[j][1], popts[j][2], (j+1)*fundamental_Freq)
+        
+        for ph in PH:
+            scaledPH.append(np.array(ph) - ph[0])
 
+        return A[0][0]
+        
 
 
 class Freq1_harmonics_amplitude_1(Base):

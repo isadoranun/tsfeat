@@ -44,6 +44,8 @@ class FeatureSpace:
     def __init__(self, Data=None, featureList=None, **kwargs):
         self.featureFunc = []
         self.featureList = []
+        self.featureOrder = []
+        self.sort = False
 
         if Data is not None:
             self.Data = Data
@@ -53,7 +55,9 @@ class FeatureSpace:
                     for name, obj in inspect.getmembers(featureFunction):
                         if inspect.isclass(obj) and name != 'Base' :
                             # if set(obj().Data).issubset(self.Data):
-                                self.featureList.append(name)
+                            self.featureOrder.append((inspect.getsourcelines(obj)[-1:])[0])
+                            self.featureList.append(name)
+
                 else:
                     for feature in featureList:
                         for name, obj in inspect.getmembers(featureFunction):
@@ -69,10 +73,12 @@ class FeatureSpace:
                         if inspect.isclass(obj) and name != 'Base':
                             if name in kwargs.keys():
                                 if set(obj(kwargs[name]).Data).issubset(self.Data):
+                                    self.featureOrder.append((inspect.getsourcelines(obj)[-1:])[0])
                                     self.featureList.append(name)
 
                             else:
                                 if set(obj().Data).issubset(self.Data):
+                                    self.featureOrder.append((inspect.getsourcelines(obj)[-1:])[0])
                                     self.featureList.append(name)
                                 else:
                                     print "Warning: the feature", name, "could not be calculated because", obj().Data, "are needed."
@@ -86,9 +92,13 @@ class FeatureSpace:
                                         self.featureList.append(name)
                                     else:
                                         print "Warning: the feature", name, "could not be calculated because", obj().Data, "are needed."
-                            
+           
+            if self.featureOrder != []: 
+                self.sort = True                           
+                self.featureOrder = np.argsort(self.featureOrder)
+                self.featureList = [self.featureList[i] for i in self.featureOrder]
+                self.idx = np.argsort(self.featureList)
 
-                    
         else:
             self.featureList = featureList
 
@@ -122,10 +132,19 @@ class FeatureSpace:
 
     def result(self, method='array'):
         if method == 'array':
-            return np.asarray(self.__result)
+            if self.sort == True:
+                return [np.asarray(self.__result)[i] for i in self.idx] 
+            else:
+                return np.asarray(self.__result)
         elif method == 'dict':
-            return dict(zip(self.featureList, self.__result))
+            if self.sort == True:
+                return dict(zip([self.featureList[i] for i in self.idx], [np.asarray(self.__result)[i] for i in self.idx]))
+            else:
+                return dict(zip(self.featureList, np.asarray(self.__result)))
         elif method == 'features':
-            return self.featureList
+            if self.sort == True:
+                return [self.featureList[i] for i in self.idx]
+            else:
+                return self.featureList
         else:
             return self.__result
