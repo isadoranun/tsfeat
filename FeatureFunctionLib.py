@@ -168,6 +168,8 @@ class SlottedA_length(Base):
 
         # T=4
         K = 100
+       
+
         [SAC, slots] = self.slotted_autocorrelation(magnitude, time, self.T, K)
         # SlottedA_length.SAC = SAC
         # SlottedA_length.slots = slots
@@ -180,12 +182,17 @@ class SlottedA_length(Base):
 
         while k is None:
             K = K+K
-            [SAC, slots] = self.slotted_autocorrelation(magnitude, time, self.T,
-                                                    K, second_round=True,
-                                                    K1=K/2)
-            SAC2 = SAC[slots]
-            k = next((index for index, value in
-                     enumerate(SAC2) if value < np.exp(-1)), None)
+
+            if K > (np.max(time) - np.min(time))/ self.T:
+                break
+            else:   
+                [SAC, slots] = self.slotted_autocorrelation(magnitude, time, self.T,
+                                                        K, second_round=True,
+                                                        K1=K/2)
+                SAC2 = SAC[slots]
+                k = next((index for index, value in
+                         enumerate(SAC2) if value < np.exp(-1)), None)
+                
 
         return slots[k] * self.T
 
@@ -820,7 +827,6 @@ class Psi_CS(Base):
             magnitude = data[0]
             time = data[1]
             folded_data = magnitude[np.argsort(new_time)]
-
             sigma = np.std(folded_data)
             N = len(folded_data)
             m = np.mean(folded_data)

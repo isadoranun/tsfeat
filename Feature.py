@@ -41,10 +41,12 @@ class FeatureSpace:
     print a.result(method='dict')
 
     """
-    def __init__(self, Data=None, featureList=None, **kwargs):
+    def __init__(self, Data=None, featureList=None, excludeList = None, **kwargs):
         self.featureFunc = []
         self.featureList = []
         self.featureOrder = []
+        self.featureList = []
+
         self.sort = False
 
         if Data is not None:
@@ -52,11 +54,19 @@ class FeatureSpace:
 
             if self.Data == 'all':
                 if featureList == None:
-                    for name, obj in inspect.getmembers(featureFunction):
-                        if inspect.isclass(obj) and name != 'Base' :
-                            # if set(obj().Data).issubset(self.Data):
-                            self.featureOrder.append((inspect.getsourcelines(obj)[-1:])[0])
-                            self.featureList.append(name)
+
+                    if excludeList == None:
+                        for name, obj in inspect.getmembers(featureFunction):
+                            if inspect.isclass(obj) and name != 'Base' :
+                                # if set(obj().Data).issubset(self.Data):
+                                self.featureOrder.append((inspect.getsourcelines(obj)[-1:])[0])
+                                self.featureList.append(name)
+                    else:
+                        for name, obj in inspect.getmembers(featureFunction):
+                            if inspect.isclass(obj) and name != 'Base' and not name in excludeList:
+                                # if set(obj().Data).issubset(self.Data):
+                                self.featureOrder.append((inspect.getsourcelines(obj)[-1:])[0])
+                                self.featureList.append(name)
 
                 else:
                     for feature in featureList:
@@ -64,13 +74,12 @@ class FeatureSpace:
                             if name != 'Base':
                                 if inspect.isclass(obj) and feature == name: 
                                     self.featureList.append(name)
-                                    
-
+                
             else:
 
                 if featureList is None:
                     for name, obj in inspect.getmembers(featureFunction):
-                        if inspect.isclass(obj) and name != 'Base':
+                        if inspect.isclass(obj) and name != 'Base' and not name in excludeList:
                             if name in kwargs.keys():
                                 if set(obj(kwargs[name]).Data).issubset(self.Data):
                                     self.featureOrder.append((inspect.getsourcelines(obj)[-1:])[0])
