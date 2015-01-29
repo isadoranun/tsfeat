@@ -41,7 +41,7 @@ class FeatureSpace:
     print a.result(method='dict')
 
     """
-    def __init__(self, Data=None, featureList=None, excludeList = None, **kwargs):
+    def __init__(self, Data=None, featureList=None, excludeList = [], **kwargs):
         self.featureFunc = []
         self.featureList = []
         self.featureOrder = []

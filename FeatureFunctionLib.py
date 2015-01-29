@@ -25,9 +25,9 @@ class Amplitude(Base):
         magnitude = data[0]
         N = len(magnitude)
         sorted_mag = np.sort(magnitude)
-        return (np.median(sorted_mag[-int(0.05 * N):]) -
-                np.median(sorted_mag[0:int(0.05 * N)])) / 2.0
 
+        return (np.median(sorted_mag[-math.ceil(0.05 * N):]) - np.median(sorted_mag[0:math.ceil(0.05 * N)])) / 2.0
+        # return sorted_mag[10]
 
 class Rcs(Base):
     #Range of cumulative sum
