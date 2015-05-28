@@ -26,11 +26,14 @@ class Amplitude(Base):
         N = len(magnitude)
         sorted_mag = np.sort(magnitude)
 
-        return (np.median(sorted_mag[-math.ceil(0.05 * N):]) - np.median(sorted_mag[0:math.ceil(0.05 * N)])) / 2.0
+        return (np.median(sorted_mag[-math.ceil(0.05 * N):]) -
+                np.median(sorted_mag[0:math.ceil(0.05 * N)])) / 2.0
         # return sorted_mag[10]
 
+
 class Rcs(Base):
-    #Range of cumulative sum
+    """Range of cumulative sum"""
+
     def __init__(self):
         self.Data = ['magnitude']
 
@@ -46,13 +49,13 @@ class Rcs(Base):
 
 class StetsonK(Base):
     def __init__(self):
-        self.Data = ['magnitude','error']
+        self.Data = ['magnitude', 'error']
 
     def fit(self, data):
         magnitude = data[0]
         error = data[2]
 
-        mean_mag = (np.sum(magnitude/(error*error)) / 
+        mean_mag = (np.sum(magnitude/(error*error)) /
                     np.sum(1.0 / (error * error)))
 
         N = len(magnitude)
@@ -77,36 +80,36 @@ class Meanvariance(Base):
 
 class Autocor_length(Base):
 
-    def __init__(self, lags = 100):
+    def __init__(self, lags=100):
         self.Data = ['magnitude']
         self.nlags = lags
 
     def fit(self, data):
 
         magnitude = data[0]
-        AC = stattools.acf(magnitude, nlags = self.nlags)
+        AC = stattools.acf(magnitude, nlags=self.nlags)
         k = next((index for index, value in
                  enumerate(AC) if value < np.exp(-1)), None)
 
         while k is None:
             self.nlags = self.nlags + 100
-            AC = stattools.acf(magnitude, nlags = self.nlags)
+            AC = stattools.acf(magnitude, nlags=self.nlags)
             k = next((index for index, value in
-                 enumerate(AC) if value < np.exp(-1)), None)
+                      enumerate(AC) if value < np.exp(-1)), None)
 
         return k
 
 
 class SlottedA_length(Base):
 
-    def __init__(self, T = -99):
+    def __init__(self, T=-99):
         """
         lc: MACHO lightcurve in a pandas DataFrame
         k: lag (default: 1)
         T: tau (slot size in days. default: 4)
         """
-        self.Data = ['magnitude','time']
-        
+        self.Data = ['magnitude', 'time']
+
         SlottedA_length.SAC = []
 
         self.T = T
@@ -130,13 +133,13 @@ class SlottedA_length(Base):
 
         ks = np.int64(np.floor(np.abs(pairs) / T + 0.5))
 
-        #We calculate the slotted autocorrelation for k=0 separately
+        # We calculate the slotted autocorrelation for k=0 separately
         idx = np.where(ks == 0)
         prod[0] = ((sum(data ** 2) + sum(data[idx[0]] *
                    data[idx[1]])) / (len(idx[0]) + len(data)))
         slots[0] = 0
 
-        #We calculate it for the rest of the ks
+        # We calculate it for the rest of the ks
         if second_round is False:
             for k in np.arange(1, K):
                 idx = np.where(ks == k)
@@ -170,10 +173,7 @@ class SlottedA_length(Base):
             sorted_deltaT = np.sort(deltaT)
             self.T = sorted_deltaT[int(N * 0.05)+1]
 
-
-        # T=4
         K = 100
-       
 
         [SAC, slots] = self.slotted_autocorrelation(magnitude, time, self.T, K)
         # SlottedA_length.SAC = SAC
@@ -188,16 +188,16 @@ class SlottedA_length(Base):
         while k is None:
             K = K+K
 
-            if K > (np.max(time) - np.min(time))/ self.T:
+            if K > (np.max(time) - np.min(time)) / self.T:
                 break
-            else:   
-                [SAC, slots] = self.slotted_autocorrelation(magnitude, time, self.T,
-                                                        K, second_round=True,
-                                                        K1=K/2)
+            else:
+                [SAC, slots] = self.slotted_autocorrelation(magnitude,
+                                                            time, self.T, K,
+                                                            second_round=True,
+                                                            K1=K/2)
                 SAC2 = SAC[slots]
                 k = next((index for index, value in
                          enumerate(SAC2) if value < np.exp(-1)), None)
-                
 
         return slots[k] * self.T
 
@@ -205,16 +205,17 @@ class SlottedA_length(Base):
         # return SlottedA_length.SAC, SlottedA_length.slots
         return SlottedA_length.autocor_vector
 
+
 class StetsonK_AC(SlottedA_length):
 
     def __init__(self):
 
-        self.Data = ['magnitude','time','error']
+        self.Data = ['magnitude', 'time', 'error']
 
     def fit(self, data):
-        
+
         try:
-        
+
             a = StetsonK_AC()
             # [autocor_vector, slots] = a.getAtt()
             autocor_vector = a.getAtt()
@@ -222,7 +223,7 @@ class StetsonK_AC(SlottedA_length):
             # autocor_vector = autocor_vector[slots]
             N_autocor = len(autocor_vector)
             sigmap = (np.sqrt(N_autocor * 1.0 / (N_autocor - 1)) *
-                     (autocor_vector - np.mean(autocor_vector)) /
+                      (autocor_vector - np.mean(autocor_vector)) /
                       np.std(autocor_vector))
 
             K = (1 / np.sqrt(N_autocor * 1.0) *
@@ -235,10 +236,9 @@ class StetsonK_AC(SlottedA_length):
             print "error: please run SlottedA_length first to generate values for StetsonK_AC "
 
 
-
 class StetsonL(Base):
     def __init__(self):
-        self.Data = ['magnitude','time','error','magnitude2','error2']
+        self.Data = ['magnitude', 'time', 'error', 'magnitude2', 'error2']
 
     def fit(self, data):
 
@@ -249,19 +249,17 @@ class StetsonL(Base):
 
         N = len(aligned_magnitude)
 
-        mean_mag = (np.sum(aligned_magnitude/(aligned_error*aligned_error)) / 
+        mean_mag = (np.sum(aligned_magnitude/(aligned_error*aligned_error)) /
                     np.sum(1.0 / (aligned_error * aligned_error)))
-        mean_mag2 = (np.sum(aligned_magnitude2/(aligned_error2*aligned_error2)) / 
+        mean_mag2 = (np.sum(aligned_magnitude2/(aligned_error2*aligned_error2)) /
                      np.sum(1.0 / (aligned_error2 * aligned_error2)))
-        
-            #sys.exit(1)
 
         sigmap = (np.sqrt(N * 1.0 / (N - 1)) *
-                 (aligned_magnitude[:N] - mean_mag) /
+                  (aligned_magnitude[:N] - mean_mag) /
                   aligned_error)
 
         sigmaq = (np.sqrt(N * 1.0 / (N - 1)) *
-                 (aligned_magnitude2[:N] - mean_mag2) /
+                  (aligned_magnitude2[:N] - mean_mag2) /
                   aligned_error2)
         sigma_i = sigmap * sigmaq
 
@@ -327,7 +325,7 @@ class Con(Base):
 #         sigma2 = np.var(data)
 
 #         return 1.0/((N-1)*sigma2) * np.sum(np.power(data[1:] - data[:-1] , 2)
-    #)
+#      )
 
 
 class Color(Base):
@@ -335,16 +333,15 @@ class Color(Base):
     mean(B1) - mean(B2)
     """
     def __init__(self):
-        self.Data = ['magnitude','time','magnitude2']
-        
+        self.Data = ['magnitude', 'time', 'magnitude2']
 
     def fit(self, data):
         magnitude = data[0]
         magnitude2 = data[3]
         return np.mean(magnitude) - np.mean(magnitude2)
 
-
 # The categories of the following featurs should be revised
+
 
 class Beyond1Std(Base):
     """Percentage of points beyond one st. dev. from the weighted
@@ -352,8 +349,7 @@ class Beyond1Std(Base):
     """
 
     def __init__(self):
-        self.Data = ['magnitude','error']
-    
+        self.Data = ['magnitude', 'error']
 
     def fit(self, data):
 
@@ -424,7 +420,7 @@ class StetsonJ(Base):
     """Stetson (1996) variability index, a robust standard deviation"""
 
     def __init__(self):
-        self.Data = ['magnitude','time','error','magnitude2','error2']
+        self.Data = ['magnitude', 'time', 'error', 'magnitude2', 'error2']
 
     def fit(self, data):
         aligned_magnitude = data[4]
@@ -433,18 +429,17 @@ class StetsonJ(Base):
         aligned_error2 = data[8]
         N = len(aligned_magnitude)
 
-        mean_mag = (np.sum(aligned_magnitude/(aligned_error*aligned_error)) / 
+        mean_mag = (np.sum(aligned_magnitude/(aligned_error*aligned_error)) /
                     np.sum(1.0 / (aligned_error * aligned_error)))
 
-        mean_mag2 = (np.sum(aligned_magnitude2 / (aligned_error2*aligned_error2)) / 
+        mean_mag2 = (np.sum(aligned_magnitude2 / (aligned_error2*aligned_error2)) /
                      np.sum(1.0 / (aligned_error2 * aligned_error2)))
-      
 
         sigmap = (np.sqrt(N * 1.0 / (N - 1)) *
-                 (aligned_magnitude[:N] - mean_mag) /
+                  (aligned_magnitude[:N] - mean_mag) /
                   aligned_error)
         sigmaq = (np.sqrt(N * 1.0 / (N - 1)) *
-                 (aligned_magnitude2[:N] - mean_mag2) /
+                  (aligned_magnitude2[:N] - mean_mag2) /
                   aligned_error2)
         sigma_i = sigmap * sigmaq
 
@@ -461,7 +456,7 @@ class MaxSlope(Base):
     """
 
     def __init__(self):
-        self.Data = ['magnitude','time']
+        self.Data = ['magnitude', 'time']
 
     def fit(self, data):
 
@@ -677,7 +672,7 @@ class PercentAmplitude(Base):
 class LinearTrend(Base):
 
     def __init__(self):
-        self.Data = ['magnitude','time']
+        self.Data = ['magnitude', 'time']
 
     def fit(self, data):
         magnitude = data[0]
@@ -691,7 +686,7 @@ class Eta_color(Base):
 
     def __init__(self):
 
-        self.Data = ['magnitude','time','magnitude2']
+        self.Data = ['magnitude', 'time', 'magnitude2']
 
     def fit(self, data):
         aligned_magnitude = data[4]
@@ -699,11 +694,6 @@ class Eta_color(Base):
         aligned_time = data[6]
         N = len(aligned_magnitude)
         B_Rdata = aligned_magnitude - aligned_magnitude2
-        # # N = len(B_Rdata)
-        # sigma2 = np.var(B_Rdata)
-
-        # return 1.0/((N-1)*sigma2) * np.sum(np.power(B_Rdata[1:] -
-            #B_Rdata[:-1] , 2))
 
         w = 1.0 / np.power(aligned_time[1:] - aligned_time[:-1], 2)
         w_mean = np.mean(w)
@@ -724,7 +714,7 @@ class Eta_e(Base):
 
     def __init__(self):
 
-        self.Data = ['magnitude','time']
+        self.Data = ['magnitude', 'time']
 
     def fit(self, data):
 
@@ -773,7 +763,7 @@ class Q31_color(Base):
 
     def __init__(self):
 
-        self.Data = ['magnitude','time','magnitude2']
+        self.Data = ['magnitude', 'time', 'magnitude2']
 
     def fit(self, data):
         aligned_magnitude = data[4]
@@ -794,16 +784,15 @@ class AndersonDarling(Base):
 
         magnitude = data[0]
         ander = stats.anderson(magnitude)[0]
-        #return ander
         return 1 / (1.0 + np.exp(-10 * (ander - 0.3)))
 
 
 class PeriodLS(Base):
 
-    def __init__(self, ofac = 6.):
+    def __init__(self, ofac=6.):
 
-        self.Data = ['magnitude','time']
-        self.ofac = ofac;
+        self.Data = ['magnitude', 'time']
+        self.ofac = ofac
 
     def fit(self, data):
 
@@ -826,13 +815,13 @@ class Period_fit(Base):
 
     def __init__(self):
 
-        self.Data = ['magnitude','time']
+        self.Data = ['magnitude', 'time']
 
     def fit(self, data):
 
         try:
             return prob
-        except:    
+        except:
             print "error: please run PeriodLS first to generate values for Period_fit"
 
 
@@ -840,10 +829,10 @@ class Psi_CS(Base):
 
     def __init__(self):
 
-        self.Data = ['magnitude','time']
+        self.Data = ['magnitude', 'time']
 
     def fit(self, data):
-        
+
         try:
             magnitude = data[0]
             time = data[1]
@@ -863,7 +852,7 @@ class Psi_eta(Base):
 
     def __init__(self):
 
-        self.Data = ['magnitude','time']
+        self.Data = ['magnitude', 'time']
 
     def fit(self, data):
 
@@ -899,15 +888,15 @@ class CAR_sigma(Base):
 
     def __init__(self):
 
-        self.Data = ['magnitude','time','error']
+        self.Data = ['magnitude', 'time', 'error']
 
     def CAR_Lik(self, parameters, t, x, error_vars):
 
         sigma = parameters[0]
         tau = parameters[1]
-       #b = parameters[1] #comment it to do 2 pars estimation
-       #tau = params(1,1);
-       #sigma = sqrt(2*var(x)/tau);
+        # b = parameters[1] #comment it to do 2 pars estimation
+        # tau = params(1,1);
+        # sigma = sqrt(2*var(x)/tau);
 
         b = np.mean(x) / tau
         epsilon = 1e-300
@@ -951,9 +940,9 @@ class CAR_sigma(Base):
 
             # x_ast[i]=x[i] - b*tau
             # x_hat[i]=a_new*x_hat[i-1] + (a_new*Omega[i-1]/(Omega[i-1] +
-                #error_vars[i-1]))*(x_ast[i-1]-x_hat[i-1])
+            # error_vars[i-1]))*(x_ast[i-1]-x_hat[i-1])
             # Omega[i]=Omega[0]*(1-(a_new**2)) + ((a_new**2))*Omega[i-1]*
-            #( 1 - (Omega[i-1]/(Omega[i-1]+ error_vars[i-1])))
+            # ( 1 - (Omega[i-1]/(Omega[i-1]+ error_vars[i-1])))
 
             loglik_inter = np.log(
                 ((2 * np.pi * (Omega[i] + error_vars[i])) ** -0.5) *
@@ -974,7 +963,7 @@ class CAR_sigma(Base):
         x0 = [10, 0.5]
         bnds = ((0, 100), (0, 100))
         # res = minimize(self.CAR_Lik, x0, args=(LC[:,0],LC[:,1],LC[:,2]) ,
-            #method='nelder-mead',bounds = bnds)
+        # method='nelder-mead',bounds = bnds)
 
         res = minimize(self.CAR_Lik, x0, args=(time, data, error),
                        method='nelder-mead', bounds=bnds)
@@ -992,9 +981,9 @@ class CAR_sigma(Base):
 
         N = len(data[0])
         magnitude = data[0].reshape((N, 1))
-        time = data[1].reshape((N, 1)) 
+        time = data[1].reshape((N, 1))
         error = data[2].reshape((N, 1)) ** 2
-       
+
         a = self.calculateCAR(time, magnitude, error)
 
         return a
@@ -1004,7 +993,7 @@ class CAR_tau(Base):
 
     def __init__(self):
 
-        self.Data = ['magnitude','time','error']
+        self.Data = ['magnitude', 'time', 'error']
 
     def fit(self, data):
 
@@ -1018,20 +1007,21 @@ class CAR_mean(Base):
 
     def __init__(self):
 
-        self.Data = ['magnitude','time','error']
+        self.Data = ['magnitude', 'time', 'error']
 
     def fit(self, data):
-        
+
         magnitude = data[0]
 
         try:
             return np.mean(magnitude) / tau
         except:
             print "error: please run CAR_sigma first to generate values for CAR_mean"
-            
+
+
 class Freq1_harmonics_amplitude_0(Base):
     def __init__(self):
-        self.Data = ['magnitude','time']
+        self.Data = ['magnitude', 'time']
 
     def fit(self, data):
         magnitude = data[0]
@@ -1045,18 +1035,18 @@ class Freq1_harmonics_amplitude_0(Base):
         A = []
         PH = []
         scaledPH = []
-        
+
         def model(x, a, b, c, Freq):
-             return a*np.sin(2*np.pi*Freq*x)+b*np.cos(2*np.pi*Freq*x)+c
-          
+            return a*np.sin(2*np.pi*Freq*x)+b*np.cos(2*np.pi*Freq*x)+c
+
         for i in range(3):
-            
+
             wk1, wk2, nout, jmax, prob = lomb.fasper(time, magnitude, 6., 100.)
 
             fundamental_Freq = wk1[jmax]
-            
+
             # fit to a_i sin(2pi f_i t) + b_i cos(2 pi f_i t) + b_i,o
-            
+
             # a, b are the parameters we care about
             # c is a constant offset
             # f is the fundamental Frequency
@@ -1064,34 +1054,33 @@ class Freq1_harmonics_amplitude_0(Base):
                 def func(x, a, b, c):
                     return a*np.sin(2*np.pi*Freq*x)+b*np.cos(2*np.pi*Freq*x)+c
                 return func
-            
+
             Atemp = []
             PHtemp = []
             popts = []
-            
+
             for j in range(4):
                 popt, pcov = curve_fit(yfunc((j+1)*fundamental_Freq), time, magnitude)
                 Atemp.append(np.sqrt(popt[0]**2+popt[1]**2))
                 PHtemp.append(np.arctan(popt[1] / popt[0]))
                 popts.append(popt)
-            
+
             A.append(Atemp)
             PH.append(PHtemp)
-            
+
             for j in range(4):
                 magnitude = np.array(magnitude) - model(time, popts[j][0], popts[j][1], popts[j][2], (j+1)*fundamental_Freq)
-        
+
         for ph in PH:
             scaledPH.append(np.array(ph) - ph[0])
 
         return A[0][0]
-        
 
 
 class Freq1_harmonics_amplitude_1(Base):
     def __init__(self):
-        
-        self.Data = ['magnitude','time']
+
+        self.Data = ['magnitude', 'time']
 
     def fit(self, data):
 
@@ -1100,10 +1089,11 @@ class Freq1_harmonics_amplitude_1(Base):
         except:
             print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
 
+
 class Freq1_harmonics_amplitude_2(Base):
     def __init__(self):
-        
-        self.Data = ['magnitude','time']
+
+        self.Data = ['magnitude', 'time']
 
     def fit(self, data):
 
@@ -1112,10 +1102,11 @@ class Freq1_harmonics_amplitude_2(Base):
         except:
             print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
 
+
 class Freq1_harmonics_amplitude_3(Base):
     def __init__(self):
-        
-        self.Data = ['magnitude','time']
+
+        self.Data = ['magnitude', 'time']
 
     def fit(self, data):
         try:
@@ -1123,10 +1114,11 @@ class Freq1_harmonics_amplitude_3(Base):
         except:
             print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
 
+
 class Freq2_harmonics_amplitude_0(Base):
     def __init__(self):
-        
-        self.Data = ['magnitude','time']
+
+        self.Data = ['magnitude', 'time']
 
     def fit(self, data):
         try:
@@ -1134,10 +1126,11 @@ class Freq2_harmonics_amplitude_0(Base):
         except:
             print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
 
+
 class Freq2_harmonics_amplitude_1(Base):
     def __init__(self):
-         
-         self.Data = ['magnitude','time']
+
+        self.Data = ['magnitude', 'time']
 
     def fit(self, data):
         try:
@@ -1145,10 +1138,11 @@ class Freq2_harmonics_amplitude_1(Base):
         except:
             print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
 
+
 class Freq2_harmonics_amplitude_2(Base):
     def __init__(self):
 
-        self.Data = ['magnitude','time']
+        self.Data = ['magnitude', 'time']
 
     def fit(self, data):
         try:
@@ -1156,10 +1150,11 @@ class Freq2_harmonics_amplitude_2(Base):
         except:
             print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
 
+
 class Freq2_harmonics_amplitude_3(Base):
     def __init__(self):
 
-        self.Data = ['magnitude','time']
+        self.Data = ['magnitude', 'time']
 
     def fit(self, data):
         try:
@@ -1167,10 +1162,11 @@ class Freq2_harmonics_amplitude_3(Base):
         except:
             print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
 
+
 class Freq3_harmonics_amplitude_0(Base):
     def __init__(self):
-        
-        self.Data = ['magnitude','time']
+
+        self.Data = ['magnitude', 'time']
 
     def fit(self, data):
         try:
@@ -1178,10 +1174,11 @@ class Freq3_harmonics_amplitude_0(Base):
         except:
             print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
 
+
 class Freq3_harmonics_amplitude_1(Base):
     def __init__(self):
-        
-        self.Data = ['magnitude','time']
+
+        self.Data = ['magnitude', 'time']
 
     def fit(self, data):
         try:
@@ -1189,10 +1186,11 @@ class Freq3_harmonics_amplitude_1(Base):
         except:
             print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
 
+
 class Freq3_harmonics_amplitude_2(Base):
     def __init__(self):
 
-        self.Data = ['magnitude','time']
+        self.Data = ['magnitude', 'time']
 
     def fit(self, data):
         try:
@@ -1200,10 +1198,11 @@ class Freq3_harmonics_amplitude_2(Base):
         except:
             print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
 
+
 class Freq3_harmonics_amplitude_3(Base):
     def __init__(self):
 
-        self.Data = ['magnitude','time']
+        self.Data = ['magnitude', 'time']
 
     def fit(self, data):
         try:
@@ -1211,10 +1210,11 @@ class Freq3_harmonics_amplitude_3(Base):
         except:
             print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
 
+
 class Freq1_harmonics_rel_phase_0(Base):
     def __init__(self):
 
-        self.Data = ['magnitude','time']
+        self.Data = ['magnitude', 'time']
 
     def fit(self, data):
         try:
@@ -1222,10 +1222,11 @@ class Freq1_harmonics_rel_phase_0(Base):
         except:
             print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
 
+
 class Freq1_harmonics_rel_phase_1(Base):
     def __init__(self):
 
-        self.Data = ['magnitude','time']
+        self.Data = ['magnitude', 'time']
 
     def fit(self, data):
         try:
@@ -1233,10 +1234,11 @@ class Freq1_harmonics_rel_phase_1(Base):
         except:
             print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
 
+
 class Freq1_harmonics_rel_phase_2(Base):
     def __init__(self):
 
-        self.Data = ['magnitude','time']
+        self.Data = ['magnitude', 'time']
 
     def fit(self, data):
         try:
@@ -1244,10 +1246,11 @@ class Freq1_harmonics_rel_phase_2(Base):
         except:
             print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
 
+
 class Freq1_harmonics_rel_phase_3(Base):
     def __init__(self):
 
-        self.Data = ['magnitude','time']
+        self.Data = ['magnitude', 'time']
 
     def fit(self, data):
         try:
@@ -1255,11 +1258,12 @@ class Freq1_harmonics_rel_phase_3(Base):
         except:
             print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
 
+
 class Freq2_harmonics_rel_phase_0(Base):
     def __init__(self):
         self.category = 'timeSeries'
 
-        self.Data = ['magnitude','time']
+        self.Data = ['magnitude', 'time']
 
     def fit(self, data):
         try:
@@ -1267,10 +1271,11 @@ class Freq2_harmonics_rel_phase_0(Base):
         except:
             print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
 
+
 class Freq2_harmonics_rel_phase_1(Base):
     def __init__(self):
 
-        self.Data = ['magnitude','time']
+        self.Data = ['magnitude', 'time']
 
     def fit(self, data):
         try:
@@ -1278,10 +1283,11 @@ class Freq2_harmonics_rel_phase_1(Base):
         except:
             print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
 
+
 class Freq2_harmonics_rel_phase_2(Base):
     def __init__(self):
 
-        self.Data = ['magnitude','time']
+        self.Data = ['magnitude', 'time']
 
     def fit(self, data):
         try:
@@ -1289,10 +1295,11 @@ class Freq2_harmonics_rel_phase_2(Base):
         except:
             print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
 
+
 class Freq2_harmonics_rel_phase_3(Base):
     def __init__(self):
 
-        self.Data = ['magnitude','time']
+        self.Data = ['magnitude', 'time']
 
     def fit(self, data):
         try:
@@ -1300,10 +1307,11 @@ class Freq2_harmonics_rel_phase_3(Base):
         except:
             print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
 
+
 class Freq3_harmonics_rel_phase_0(Base):
     def __init__(self):
 
-        self.Data = ['magnitude','time']
+        self.Data = ['magnitude', 'time']
 
     def fit(self, data):
         try:
@@ -1311,10 +1319,11 @@ class Freq3_harmonics_rel_phase_0(Base):
         except:
             print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
 
+
 class Freq3_harmonics_rel_phase_1(Base):
     def __init__(self):
 
-        self.Data = ['magnitude','time']
+        self.Data = ['magnitude', 'time']
 
     def fit(self, data):
         try:
@@ -1322,10 +1331,11 @@ class Freq3_harmonics_rel_phase_1(Base):
         except:
             print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
 
+
 class Freq3_harmonics_rel_phase_2(Base):
     def __init__(self):
 
-        self.Data = ['magnitude','time']
+        self.Data = ['magnitude', 'time']
 
     def fit(self, data):
         try:
@@ -1333,10 +1343,11 @@ class Freq3_harmonics_rel_phase_2(Base):
         except:
             print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
 
+
 class Freq3_harmonics_rel_phase_3(Base):
     def __init__(self):
- 
-         self.Data = ['magnitude','time']
+
+        self.Data = ['magnitude', 'time']
 
     def fit(self, data):
         try:
