@@ -25722,20 +25722,18 @@ AKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKAP//Z
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The library is coded in python and can be downloaded for free from the github website <a href="https://github.com/isadoranun/tsfeat">https://github.com/isadoranun/tsfeat</a>. The main idea is that any user can run it in its own database but can also add new features through the github system. For a quick guide on how to use github visit <a href="https://guides.github.com/activities/hello-world/">https://guides.github.com/activities/hello-world/</a>.</p>
+<p>The library is coded in python and can be downloaded  from the Github repository <a href="https://github.com/isadoranun/tsfeat">https://github.com/isadoranun/tsfeat</a>. New features may be added by issuing pull requests via the Github version control system. For a quick guide on how to use github visit <a href="https://guides.github.com/activities/hello-world/">https://guides.github.com/activities/hello-world/</a>.</p>
 <p>It is also possible to obtain the library by downloading the python package from <a href="https://pypi.python.org/pypi/FATS">https://pypi.python.org/pypi/FATS</a> or by directly installing it from the terminal as follows:</p>
 <p><em>$ pip install FATS</em></p>
-<p>The library receives as input the time series data and returns as output a vector with the calculated features. In order to calculate all the available features, the data should be an array containing the following vectors and in the following order:</p>
+<p>The library receives as input the time series data and returns as output an array with the calculated features. Depending on the available input the user can calculate different features. For example, if the user has only the vectors magnitude and time, just the features that need this data will be able to be computed. This will be deeper explained in section</p>
+<p>In order to calculate all the possible features the following vectors (also termed as raw data) are needed per light curve:</p>
 <ul>
 <li><strong>magnitude</strong></li>
 <li>time</li>
 <li>error</li>
 <li>magnitude2 </li>
-<li>aligned magnitude</li>
-<li>aligned magnitude2</li>
-<li>aligned time</li>
-<li>aligned error</li>
-<li>aligned error2</li>
+<li>time2</li>
+<li>error2</li>
 </ul>
 <p>Nevertheless, the magnitude vector is the only input strictly required by the library given that it is necessary for the calculation of all the features. The remaining vectors are optional since they are needed just by some features. In other words, if the user does not have this addtional data, it is still possible to calculate the features that do not need them. For a description of each vector see <a href="#ImportLC">below</a>.</p>
 <p>This is an example of how the input could look like if you have only magnitude and time as input vectors:</p>
