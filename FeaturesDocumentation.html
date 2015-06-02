@@ -25910,7 +25910,7 @@ In&nbsp;[41]:
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Some examples of how to choose the features from the library to be calculated are presented next: </p>
+<p>The possible ways of how an user can choose the features from the library to be calculated are presented next.</p>
 </div>
 </div>
 </div>
@@ -25929,7 +25929,7 @@ In&nbsp;[41]:
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The user should add <em>featureList = </em> and next provide the features to be calculated as a list (between square brackets). In the following case we aim to calculate the Standard deviation and Stetson L of the data:</p>
+<p>The user can also specify a list of features as input by specifying the features as a list for the parameter <em>featureList</em>. In the following example, we aim to calculate the standard deviation and Stetson L of the data:</p>
 </div>
 </div>
 </div>
@@ -25988,7 +25988,7 @@ In&nbsp;[55]:
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In case the user does not have the six input vectors mentioned  <a href="#Vectors">above</a>, it is necessary to specify the available  data by adding <em>Data =</em>  followed by the list of vectors between brackets. In the example below we calculate all the features that can be computed with the <em>magnitude</em> and <em>time</em> as an input.</p>
+<p>In case the user does not have all the input vectors mentioned above, it is necessary to specify the available  data by specifying the list of vectors using the parameter <em>Data</em>. In the example below, we calculate all the features that can be computed with the magnitude and time as an input.</p>
 </div>
 </div>
 </div>
@@ -26064,7 +26064,7 @@ Warning: the feature StetsonL could not be calculated because [&apos;magnitude&a
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>It is also an option to provide the available time series input vectors and calculate with this data all the possible features from a feature list:</p>
+<p>It is also possible to provide the available time series input vectors and calculate all possible features from a feature list using this data:</p>
 </div>
 </div>
 </div>
@@ -26132,7 +26132,7 @@ Warning: the feature SlottedA_length could not be calculated because [&apos;magn
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The user can also create a list of features to be excluded from the calculation. To do so, <em>excludeList=</em> must be added followed by the list between brackets. This would imply that every possible feature will be calculated except those in the excluding list.</p>
+<p>The user can also create a list of features to be excluded from the calculation. To do so, the list of features to be excluded can be passed as a list via the parameter <em>excludeList</em>. For example:</p>
 </div>
 </div>
 </div>
@@ -26210,7 +26210,7 @@ error: please run PeriodLS first to generate values for Psi_eta
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>To calculate all the existent features in the library, the user should add <em>Data=&#39;all&#39;</em> followed by <em>featureList = None</em> as shown in the next example. Obviously, in order to do this, the user must have provided all the needed time series input vectors.</p>
+<p>To calculate all the existing features in the library, the user can set the \verb|Data| parameter to the string <em>'all'</em> and set the <em>featureList</em> parameter to be <em>None</em>. Obviously, in order to do this, the user must have also provided all the necessary time series input vectors.</p>
 </div>
 </div>
 </div>
@@ -26275,7 +26275,7 @@ In&nbsp;[51]:
 <li>&quot;array&quot;: returns a vector with only the features values.</li>
 <li>&quot;features&quot; : returns a vector with the list of the calculated features.</li>
 </ul>
-<p>The following example shows how to implement the first option:</p>
+<p>The output format can be specified via a string for the parameter <em>method</em>, as shown in the example below:</p>
 </div>
 </div>
 </div>
@@ -26404,7 +26404,7 @@ In&nbsp;[52]:
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In order to check systematically the validity of the features, a test is created for each one of them in a unit test file called &quot;test_library.py&quot;. This script should be always run before using the library by executing $ py.test. Also, if the user contributes with a new feature for the library, a pertinent test should be added to the unit test file. The idea is to guarantee, as far as possible,  that every feature calculated is correct. In most of the cases this can be reached by calculating the expected feature value for a known distribution (normal, uniform, etc) and then by checking it with the value obtained from the library.</p>
+<p>In order to systematically check the correctness of the feature generation implementation in our library, a unit test is created for each feature in a unit test file named &quot;test_library.py&quot;. This script should be always run before using the library by executing $ py.test at the command line. In addition, if a user contributes a new feature for the library, a pertinent test should be added to the unit test file. The idea is to guarantee, as far as possible, that every feature calculated is correct. In most cases, this can be reached by calculating the expected feature value for a known distribution (normal, uniform, or otherwise), and then checking it with the value obtained from the library.</p>
 <p>The following image shows how py.test output should look if all the tests are passed:</p>
 </div>
 </div>
