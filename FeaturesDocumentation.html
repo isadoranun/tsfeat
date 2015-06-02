@@ -5015,14 +5015,14 @@ AooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAP/9k=
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>A time series is a sequence of observations (data points) that are arranged based on the time of their ocurrence. The hourly measurement of wind speeds in meteorology, the minute by minute recording of electrical activity along the scalp in electroencephalography, the weekly changes of stock prices in finances, are just some examples among many others. </p>
-<p>Some of the main properties one would expect to find in a time series are [1]:</p>
+<p>A time series is a sequence of observations, or data points, that is arranged based on the times of their occurrence. The hourly measurement of wind speeds in meteorology, the minute by minute recording of electrical activity along the scalp in electroencephalography, and the weekly changes of stock prices in finances are just some examples of time series, among many others. </p>
+<p>Some of the following properties may be observed in time series data [1]:</p>
 <ul>
 <li>the data is not generated independently</li>
 <li>their dispersion varies in time</li>
-<li>they are often governed by a trend and they have cyclic components</li>
+<li>they are often governed by a trend and/or have cyclic components</li>
 </ul>
-<p>The study and analysis of time series can have multiple ends: get a better understanding of the mechanism generating the data, predict future outcomes and behaviours, classification and characterization of events, etc. </p>
+<p>The study and analysis of time series can have multiple ends: to gain a better understanding of the mechanism generating the data, to predict future outcomes and behaviors, to classify and characterize events, or more. </p>
 </div>
 </div>
 </div>
@@ -5350,12 +5350,14 @@ In&nbsp;[108]:
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In time-domain astronomy, data gathered from the telescopes is usually represented in the form of light-curves. These are time series that show the brightness variation of an object through a period of time (for a visual representation see video below).  Based on the variability characteristics of the light-curves, celestial objects can be classified into different groups (quasars, long period variables, eclipsing binaries, etc.) and consequently be studied in depth independently. </p>
-<p>In order to characterize this variability, some of the existing methods use machine learning algorithms that build their decision on the light-curves features. Features, the topic of the following work, are numerical descriptors that aim to characterize and distinguish the different variability classes. They can go from basic statistical measures such as the mean or the standard deviation, to complex time-series characteristics such as the autocorrelation function. </p>
-<p>In this document we present a library with a compilation of some of the existing light-curve features. The main goal is to create a collaborative and open tool where every user can characterize or analyze an astronomical photometric database while also contributing to the library by adding new features. However, it is important to highlight that this library is not restricted to the astronomical field and could also be applied to any kind of time series.</p>
-<p>Our vision is to be capable of analyzing and comparing light-curves from all the available astronomical catalogs in a standard and universal way. This would facilitate and make more efficient tasks as modeling, classification, data cleaning, outlier detection and data analysis in general. Consequently, when studying light-curves, astronomers and data analysts would be on the same wavelength and would not have the necessity to find a way of comparing or matching different features. 
-In order to achieve this goal, the library should be run in every existent survey (MACHO, EROS, OGLE, Catalina, Pan-STARRS, etc) and future surveys (LSST) and the results should be ideally shared in the same open way as this library. </p>
-<p>The way a user can contribute to the library as well as every feature that we have developed so far are explained throughout this document. A Readme file is also available in case of needing extra information. </p>
+	
+
+<p>In time-domain astronomy, data gathered from the telescopes is usually represented in the form of light-curves which are time series that show the brightness variation of an object through a period of time (for a visual representation see video below). Based on the variability characteristics of the light-curves, celestial objects can be classified into different groups (quasars, long period variables, eclipsing binaries, etc.) and consequently can be studied in depth independently. </p>
+<p>Classification of data into groups can be performed in several ways given light curve data: primarily, existing methods found in the literature use machine learning algorithms that group light-curves into categories through feature extraction from the light-curve data. These light-curve features, the topic of this work, are numerical or categorical properties of the light-curves which can be used to characterize and distinguish the different variability classes. Features can range from basic statistical properties such as the mean or the standard deviation to more complex time series characteristics such as the autocorrelation function. These features should ideally be informative and discriminative, thus allowing for machine learning or other algorithms to use them to distinguish between classes of light-curves. </p>
+<p>In this document, which allows for the fast and efficient calculation of a compilation of many existing light-curve features. The main goal is to create a collaborative and open tool where users can characterize or analyze an astronomical photometric database while also contributing to the library by adding new features. However, it is important to highlight that this library is not necessarily restricted to the astronomical domain and can also be applied to any kind of time series data.</p>
+<p>Our vision is to be capable of analyzing and comparing light curves from any available astronomical catalog in a standard and universal way. This would facilitate and make more efficient tasks such as modeling, classification, data cleaning, outlier detection, and data analysis in general. Consequently, when studying light curves, astronomers and data analysts using our library would be able to compare and match different features in a standardized way. 
+In order to achieve this goal, the library should be run and features generated for every existent survey (MACHO, EROS, OGLE, Catalina, Pan-STARRS, etc.), as well as for future surveys (LSST), and the results shared openly, as is this library. </p>
+<p>In the remainder of this document, we provide an overview of the features developed so far and explain how users can contribute to the library. A Readme file is also available in case of needing extra information. </p>
 </div>
 </div>
 </div>
@@ -28780,9 +28782,8 @@ iJSgLW5FRERanFr2IiIiLU7BXkREpMUp2IuIiLQ4BXsREZEWp2AvIiLS4hTsRUREWpyCvYiISIv7
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The next section details the features that we have developed in order to represent the light-curves. 
-Every feature is described and tested with a suitable experiment to prove its validity. </p>
-<p>Note: Each feature was also tested to check its invariance to unequal sampling. This refers to the fact that the telescope observations are not always taken at uniformly spaced intervals. Evidently, light-curve descriptors should be insensitive to this nonuniformity. The tests can be found in the <a href="#Appendix">appendix</a> of this document. </p>
+<p>The next section details the features that we have developed in order to represent light curves. For each feature, we also describe a benchmark test performed in order to test the feature's correctness. </p>
+<p>Note: Each feature was also tested to ensure invarability to unequal sampling. Because telescope observations are not always taken at uniformly spaced intervals, the light curve features should be invariant to this nonuniformity. These tests are explained in the <a href="#Appendix">appendix</a> of this document. </p>
 </div>
 </div>
 </div>
@@ -29037,7 +29038,7 @@ In&nbsp;[19]:
 <p>$$R_{cs} = max(S) - min(S)$$
 $$S = \frac{1}{N \sigma} \sum_{i=1}^l \left( m_i - \bar{m} \right) $$</p>
 <p>where max(min) is the maximum (minimum) value of S and $l=1,2, \dots, N$. </p>
-<p>$R_{cs}$ should take a value close to zero for a normal distribution:</p>
+<p>$R_{cs}$ should take a value close to zero for any symmetric distribution:</p>
 </div>
 </div>
 </div>
@@ -31855,7 +31856,7 @@ In&nbsp;[112]:
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>This is a simple variability index and is defined as the ratio of the standard deviation, $\sigma$, to the mean magnitude, $\bar{m}$. If a light curve has strong variability, $\frac{\sigma}{\bar{m}}$ of the light curve is generally large.</p>
-<p>For a uniform distribution the mean-variance should take a value close to 0.577:</p>
+<p>For a uniform distribution from 0 to 1, the mean is equal to 0.5 and the variance is equal to 1/12, thus the mean-variance should take a value close to 0.577:</p>
 </div>
 </div>
 </div>
