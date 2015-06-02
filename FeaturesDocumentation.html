@@ -25929,7 +25929,7 @@ In&nbsp;[41]:
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The user can also specify a list of features as input by specifying the features as a list for the parameter <em>featureList</em>. In the following example, we aim to calculate the standard deviation and Stetson L of the data:</p>
+<p>The user can specify a list of features as input by specifying the features as a list for the parameter <em>featureList</em>. In the following example, we aim to calculate the standard deviation and Stetson L of the data:</p>
 </div>
 </div>
 </div>
@@ -26210,7 +26210,7 @@ error: please run PeriodLS first to generate values for Psi_eta
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>To calculate all the existing features in the library, the user can set the \verb|Data| parameter to the string <em>'all'</em> and set the <em>featureList</em> parameter to be <em>None</em>. Obviously, in order to do this, the user must have also provided all the necessary time series input vectors.</p>
+<p>To calculate all the existing features in the library, the user can set the <em>Data</em> parameter to the string <em>'all'</em> and set the <em>featureList</em> parameter to be <em>None</em>. Obviously, in order to do this, the user must have also provided all the necessary time series input vectors.</p>
 </div>
 </div>
 </div>
@@ -27146,7 +27146,7 @@ A3qbZRStf1RIAAAAAElFTkSuQmCC
 <p>A demonstration of how to import a MACHO light-curve is presented below. Besides opening the file, the data is:</p>
 <ul>
 <li>preprocessed: points within 5 standard deviations from the mean are considered as noise and thus are eliminated. </li>
-<li>synchronized: when observed in different bands, light-curves of a same object are not always monitored for the same time length and at the same precise times. For some features, it is important to align the light-curves and to only consider the simultaneous measurements from both bands. This correspond to the previous mentioned vectors <strong>aligned_mag, aligned_mag2, aligned_time, aligned error</strong> and <strong>aligned_error2</strong>.</li>
+<li>synchronized:  it synchronizes the light-curves in the two different bands and returns <strong>aligned_mag, aligned_mag2, aligned_time, aligned error</strong> and <strong>aligned_error2</strong>.</li>
 </ul>
 <p>Note: mag, time and error must have the same lenght as well as aligned_mag, aligned_mag2, aligned_time, aligned_error and aligned_error2.</p>
 </div>
