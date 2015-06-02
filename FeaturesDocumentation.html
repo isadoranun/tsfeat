@@ -25801,7 +25801,20 @@ In&nbsp;[14]:
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>hola</p>
+<p>When observed in different bands, light curves of a same object are not always monitored for the same time length and at the same precise times. For some features, it is important to align the light curves and to only consider the simultaneous measurements from both bands. The aligned vectors refer to the arrays obtained by synchronizing the raw data.
+<p> Thus, the actual input needed by the library is an array containing the following vectors and in the following order:</p>
+<ul>
+<li>magnitude</li>
+<li>time</li>
+<li>error</li>
+<li>magnitude2 </li>
+<li>aligned_magnitude</li>
+<li>aligned_magnitude2</li>
+<li>aligned_time</li>
+<li>aligned_error</li>
+<li>aligned_error2</li>
+</ul>
+</p>
 </div>
 </div>
 </div>
