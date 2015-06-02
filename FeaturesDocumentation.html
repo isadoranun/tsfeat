@@ -25725,7 +25725,7 @@ AKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKAP//Z
 <p>The library is coded in python and can be downloaded  from the Github repository <a href="https://github.com/isadoranun/tsfeat">https://github.com/isadoranun/tsfeat</a>. New features may be added by issuing pull requests via the Github version control system. For a quick guide on how to use github visit <a href="https://guides.github.com/activities/hello-world/">https://guides.github.com/activities/hello-world/</a>.</p>
 <p>It is also possible to obtain the library by downloading the python package from <a href="https://pypi.python.org/pypi/FATS">https://pypi.python.org/pypi/FATS</a> or by directly installing it from the terminal as follows:</p>
 <p><em>$ pip install FATS</em></p>
-<p>The library receives as input the time series data and returns as output an array with the calculated features. Depending on the available input the user can calculate different features. For example, if the user has only the vectors magnitude and time, just the features that need this data will be able to be computed. This will be deeper explained in section</p>
+<p>The library receives as input the time series data and returns as output an array with the calculated features. Depending on the available input the user can calculate different features. For example, if the user has only the vectors magnitude and time, just the features that need this data will be able to be computed.</p>
 <p>In order to calculate all the possible features the following vectors (also termed as raw data) are needed per light curve:</p>
 <ul>
 <li><strong>magnitude</strong></li>
@@ -25735,7 +25735,7 @@ AKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKACgAoAKAP//Z
 <li>time2</li>
 <li>error2</li>
 </ul>
-<p>where <strong>2</strong> refers to a different observation band. It is worth pointing out that the magnitude vector is the only input strictly required by the library given that it is necessary for the calculation of all the features. The remaining vectors are optional since they are needed just by some features. In other words, if the user does not have this additional data or he is analyzing time series other than light curves, it is still possible to calculate some of the features. More details are presented in  section \ref{sec:choosing_features}.</p>
+<p>where <strong>2</strong> refers to a different observation band. It is worth pointing out that the magnitude vector is the only input strictly required by the library given that it is necessary for the calculation of all the features. The remaining vectors are optional since they are needed just by some features. In other words, if the user does not have this additional data or he is analyzing time series other than light curves, it is still possible to calculate some of the features. More details are presented in the next section.</p>
 <p>This is an example of how the input could look like if you have only magnitude and time as input vectors:</p>
 </div>
 </div>
@@ -25839,7 +25839,7 @@ def fit(self,data):
     regression_slope = stats.linregress(time, magnitude)[0]
 
     return regression_slope
-</code></pre><p>If the user wants to contribute with feature(s) to the library, it (they) must be added to <em>FeatureFunctionLib.py</em> following the explained format. There is no need to modify <em>Feature.py</em>. The user should also add a validity test to the unit test file (see explanation <a href="#UnitTest">further down</a>).</p>
+</code></pre><p>If the user wants to contribute with features to the library, they must be added to <em>FeatureFunctionLib.py</em> following the explained format. There is no need to modify <em>Feature.py</em>. The user should also add a validity test to the unit test file (see explanation <a href="#UnitTest">further down</a>).</p>
 </div>
 </div>
 </div>
@@ -25858,7 +25858,7 @@ def fit(self,data):
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The library  allows the user to either choose the specific features of interest to be calculated or to calculate them all simultaneously. Nevertheless, as already mentioned, the features are divided depending on the input data  needed for their computation (magnitude, time, error, second data, etc.), this will be used as an automatic selection parameter. For example, if the user wants to calculate all the available features but he/she only has the vectors <em>magnitude</em> and <em>time</em>, solely the features that need <em>magnitude</em>, <em>time</em> or <em>magnitude</em> and <em>time</em> as an input will be computed.</p>
+<p>The library  allows the user to either choose the specific features of interest to be calculated or to calculate them all simultaneously. Nevertheless, as already mentioned, the features are divided depending on the input data  needed for their computation (magnitude, time, error, second data, etc.). If unspecified, this will be used as an automatic selection parameter. For example, if the user wants to calculate all the available features but only has the vectors <em>magnitude</em> and <em>time</em>, only the features that need <em>magnitude</em> and/or <em>time</em> as an input will be computed.</p>
 <p><strong>Note:</strong> some features depend on other features and consequently must be computed together. For instance, <em>Period_fit</em> returns the false alarm probability of the estimated period. It is necessary then to calculate also the period <em>PeriodLS</em>.</p>
 <p>The list of all the possible features with their corresponding input data, additional parameters and literature source is presented in the following table: </p>
 </div>
@@ -25988,7 +25988,7 @@ In&nbsp;[55]:
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In case the user does not have the seven input vectors mentioned  <a href="#Vectors">above</a>, it is necessary to specify the available  data by adding <em>Data =</em>  followed by the list of vectors between brackets. In the example below we calculate all the features that can be computed with the <em>magnitude</em> and <em>time</em> as an input.</p>
+<p>In case the user does not have the six input vectors mentioned  <a href="#Vectors">above</a>, it is necessary to specify the available  data by adding <em>Data =</em>  followed by the list of vectors between brackets. In the example below we calculate all the features that can be computed with the <em>magnitude</em> and <em>time</em> as an input.</p>
 </div>
 </div>
 </div>
