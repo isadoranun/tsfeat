@@ -246,14 +246,14 @@ img {
   padding: 0;
   float: right;
 }
-.ul2 .li {
+.ul2 li {
   float: left;
   margin: 0 0 0 58px;
 }
-.ul2 .li .a {
+.ul2 li a {
   padding: 0 10px;
 }
-.a {
+a {
   color: black;
   text-decoration: none;
 }
