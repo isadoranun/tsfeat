@@ -219,17 +219,17 @@ html >/**/ body {
   width: 50%;
 }
 
-/*ul {
+ul.a {
   list-style-type: none;
   margin: 0;
   padding: 0;
   float: right;
 }
-ul li {
+ul.a li {
   float: left;
   margin: 0 0 0 58px;
 }
-ul li a {
+ul.a li a {
   padding: 0 10px;
 }
 a {
@@ -238,7 +238,9 @@ a {
 }
 img {
   border: 0;
-}*/
+}
+
+
 
 
 .header {
