@@ -331,7 +331,8 @@ a {
 
 .footer {
 
-  padding: 30px 0 50px;
+  position: relative;
+  /*padding: 30px 0 50px;*/
   text-align: center;
   width: 100%;
   display: block;
