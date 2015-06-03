@@ -331,7 +331,7 @@ a {
 
 .footer {
 
-  padding: 30px 0 100px;
+  padding: 30px 0 50px;
   text-align: center;
   width: 100%;
   display: block;
@@ -339,6 +339,8 @@ a {
   font-family: Recta-Regular, sans-serif;
   font-weight: normal;
   letter-spacing: .1em;
+  margin-top: -100px;
+
 
 }
 .footer b, .footer strong {
