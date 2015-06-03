@@ -332,7 +332,7 @@ a {
 .footer {
 
   position: absolute;
-  top: -100px;
+  top: -10px;
   /*padding: 30px 0 50px;*/
   text-align: center;
   width: 100%;
