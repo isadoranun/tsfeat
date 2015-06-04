@@ -331,9 +331,8 @@ a {
 
 .footer {
 
-  position: absolute;
-  top: 500px;
-  padding: 30px 0 50px;
+  position: relative;
+  padding: 200px 0 50px;
   text-align: center;
   width: 100%;
   display: block;
@@ -584,8 +583,8 @@ a {
   float: left;
 }
 .about .right {
-  margin-left: 92px;
-  width: 335px;
+  margin-left: -60px;
+  width: 485px;
   float: left;
 }
 .about .textboxes {
