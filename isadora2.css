@@ -332,7 +332,7 @@ a {
 .footer {
 
   position: relative;
-  padding: 200px 0 50px;
+  padding: 500px 0 50px;
   text-align: center;
   width: 100%;
   display: block;
@@ -578,6 +578,7 @@ a {
   overflow: hidden;
 }
 .about .left {
+  margin-top: -35px;  
   width: 630px;
   margin-left: -60px;
   float: left;
