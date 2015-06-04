@@ -579,7 +579,7 @@ a {
   overflow: hidden;
 }
 .about .left {
-  margin-top: -35px;  
+  margin-top: 2px;  
   width: 630px;
   margin-left: -60px;
   float: left;
