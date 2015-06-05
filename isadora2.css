@@ -137,8 +137,7 @@ table tr th:last-child {
   /*position:relative;*/
   top:0%;    
   height:70%;
-  width:380px;
-  margin-left:auto;
+  width:450px;
   margin-right:auto;
   /*border-radius:5px;
   background:RGBA(255,255,255,1);
@@ -254,12 +253,29 @@ img {
 .ul2 li a {
   padding: 0 10px;
 }
-a {
+
+
+a.menu {
   color: black;
+  text-decoration: none;
+
+}
+a.menu:hover {
+  text-decoration: underline;
+  
+}
+a.menu2 {
+  color: black;
+  text-decoration: none;
+
+}
+
+a {
+  color: #82CAFF;
   text-decoration: none;
 }
 
-a .DownloadLC:hover{
+a.DownloadLC:hover{
  text-decoration: underline;
 }
 
@@ -333,11 +349,14 @@ a .DownloadLC:hover{
   top: 22px;
 }
 
+.intro {
+  font-size: 120%;
+}
 
 .footer {
 
   position: relative;
-  padding: 50px 0 50px;
+  padding: 10px 0 10px;
   text-align: center;
   width: 100%;
   display: block;
@@ -345,7 +364,7 @@ a .DownloadLC:hover{
   font-family: Recta-Regular, sans-serif;
   font-weight: normal;
   letter-spacing: .1em;
-  margin-top: 100px;
+  margin-top: 10px;
 
 
 }
