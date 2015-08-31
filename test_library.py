@@ -275,6 +275,13 @@ def test_Stetson(white_noise):
 	assert(a.result(method='array')[3] >= -0.1 and a.result(method='array')[3] <= 0.1)
 	assert(a.result(method='array')[4] >= -0.1 and a.result(method='array')[4] <= 0.1)
 
+def test_Gskew(white_noise):
+	# data, mjd, error, second_data, aligned_data, aligned_second_data, aligned_mjd = white_noise()
+
+	a = FeatureSpace(featureList=['Gskew'])
+	a=a.calculateFeature(white_noise)
+	assert(a.result(method='array') >= -0.2 and a.result(method='array') <= 0.2)
+
 
 
 
