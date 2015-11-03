@@ -49,6 +49,15 @@ div.cell.code_cell {
 
 }
 
+div.cell.code_cell2 {
+    background-color: white; 
+    border-radius: 10px; /* rounded borders */
+    padding: 1em;
+    margin-top: 1em;
+    margin-left:2.7em;
+
+}
+
 div.text_cell_render{
     font-family: 'Alvo' sans-serif;
     line-height: 130%;
@@ -144,6 +153,7 @@ div.prompt { /* remove In/Out prompt */
 
 div.output_subarea { /* remove margin in front of output */
     border: none;
+
 }
 
 </style>
