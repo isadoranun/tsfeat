@@ -1,3 +1,4 @@
+from __future__ import division, print_function, absolute_import,   unicode_literals
 import os
 import sys
 import time
@@ -12,7 +13,7 @@ import featureFunction
 
 class FeatureSpace:
     """
-    This Class is a wrapper class, to allow user select the 
+    This Class is a wrapper class, to allow user select the
     features based on the available time series vectors (magnitude, time,
     error, second magnitude, etc.) or specify a list of features.
 
@@ -24,7 +25,7 @@ class FeatureSpace:
     User could only specify featureList, which will output
     all the features in the list.
 
-    User could specify a list of the available time series vectors and 
+    User could specify a list of the available time series vectors and
     featureList, which will output all the features in the List that
     use the available data.
 
@@ -72,9 +73,9 @@ class FeatureSpace:
                     for feature in featureList:
                         for name, obj in inspect.getmembers(featureFunction):
                             if name != 'Base':
-                                if inspect.isclass(obj) and feature == name: 
+                                if inspect.isclass(obj) and feature == name:
                                     self.featureList.append(name)
-                
+
             else:
 
                 if featureList is None:
@@ -90,20 +91,20 @@ class FeatureSpace:
                                     self.featureOrder.append((inspect.getsourcelines(obj)[-1:])[0])
                                     self.featureList.append(name)
                                 else:
-                                    print "Warning: the feature", name, "could not be calculated because", obj().Data, "are needed."
+                                    print("Warning: the feature", name, "could not be calculated because", obj().Data, "are needed.")
                 else:
 
                     for feature in featureList:
                         for name, obj in inspect.getmembers(featureFunction):
                             if name != 'Base':
-                                if inspect.isclass(obj) and feature == name: 
+                                if inspect.isclass(obj) and feature == name:
                                     if set(obj().Data).issubset(self.Data):
                                         self.featureList.append(name)
                                     else:
-                                        print "Warning: the feature", name, "could not be calculated because", obj().Data, "are needed."
-           
-            if self.featureOrder != []: 
-                self.sort = True                           
+                                        print("Warning: the feature", name, "could not be calculated because", obj().Data, "are needed.")
+
+            if self.featureOrder != []:
+                self.sort = True
                 self.featureOrder = np.argsort(self.featureOrder)
                 self.featureList = [self.featureList[i] for i in self.featureOrder]
                 self.idx = np.argsort(self.featureList)
@@ -118,19 +119,19 @@ class FeatureSpace:
                 try:
                     a = getattr(m, item)(kwargs[item])
                 except:
-                    print "error in feature " + item
+                    print("error in feature " + item)
                     sys.exit(1)
             else:
                 try:
                     a = getattr(m, item)()
                 except:
-                    print " could not find feature " + item
+                    print(" could not find feature " + item)
                     # discuss -- should we exit?
                     sys.exit(1)
             try:
                 self.featureFunc.append(a.fit)
             except:
-                print "could not initilize " + item
+                print("could not initilize " + item)
 
     def calculateFeature(self, data):
         self._X = np.asarray(data)
@@ -142,7 +143,7 @@ class FeatureSpace:
     def result(self, method='array'):
         if method == 'array':
             if self.sort == True:
-                return [np.asarray(self.__result)[i] for i in self.idx] 
+                return [np.asarray(self.__result)[i] for i in self.idx]
             else:
                 return np.asarray(self.__result)
         elif method == 'dict':

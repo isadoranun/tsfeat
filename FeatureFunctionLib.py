@@ -1,3 +1,4 @@
+from __future__ import division, print_function, absolute_import, unicode_literals
 import os
 import sys
 import time
@@ -233,7 +234,7 @@ class StetsonK_AC(SlottedA_length):
 
         except:
 
-            print "error: please run SlottedA_length first to generate values for StetsonK_AC "
+            print("error: please run SlottedA_length first to generate values for StetsonK_AC ")
 
 
 class StetsonL(Base):
@@ -822,7 +823,7 @@ class Period_fit(Base):
         try:
             return prob
         except:
-            print "error: please run PeriodLS first to generate values for Period_fit"
+            print("error: please run PeriodLS first to generate values for Period_fit")
 
 
 class Psi_CS(Base):
@@ -845,7 +846,7 @@ class Psi_CS(Base):
 
             return R
         except:
-            print "error: please run PeriodLS first to generate values for Psi_CS"
+            print("error: please run PeriodLS first to generate values for Psi_CS")
 
 
 class Psi_eta(Base):
@@ -881,7 +882,7 @@ class Psi_eta(Base):
 
             return Psi_eta
         except:
-            print "error: please run PeriodLS first to generate values for Psi_eta"
+            print("error: please run PeriodLS first to generate values for Psi_eta")
 
 
 class CAR_sigma(Base):
@@ -1000,7 +1001,7 @@ class CAR_tau(Base):
         try:
             return tau
         except:
-            print "error: please run CAR_sigma first to generate values for CAR_tau"
+            print("error: please run CAR_sigma first to generate values for CAR_tau")
 
 
 class CAR_mean(Base):
@@ -1016,7 +1017,7 @@ class CAR_mean(Base):
         try:
             return np.mean(magnitude) / tau
         except:
-            print "error: please run CAR_sigma first to generate values for CAR_mean"
+            print("error: please run CAR_sigma first to generate values for CAR_mean")
 
 
 class Freq1_harmonics_amplitude_0(Base):
@@ -1087,7 +1088,7 @@ class Freq1_harmonics_amplitude_1(Base):
         try:
             return A[0][1]
         except:
-            print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+            print("error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics")
 
 
 class Freq1_harmonics_amplitude_2(Base):
@@ -1100,7 +1101,7 @@ class Freq1_harmonics_amplitude_2(Base):
         try:
             return A[0][2]
         except:
-            print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+            print("error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics")
 
 
 class Freq1_harmonics_amplitude_3(Base):
@@ -1112,7 +1113,7 @@ class Freq1_harmonics_amplitude_3(Base):
         try:
             return A[0][3]
         except:
-            print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+            print("error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics")
 
 
 class Freq2_harmonics_amplitude_0(Base):
@@ -1124,7 +1125,7 @@ class Freq2_harmonics_amplitude_0(Base):
         try:
             return A[1][0]
         except:
-            print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+            print("error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics")
 
 
 class Freq2_harmonics_amplitude_1(Base):
@@ -1136,7 +1137,7 @@ class Freq2_harmonics_amplitude_1(Base):
         try:
             return A[1][1]
         except:
-            print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+            print("error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics")
 
 
 class Freq2_harmonics_amplitude_2(Base):
@@ -1148,7 +1149,7 @@ class Freq2_harmonics_amplitude_2(Base):
         try:
             return A[1][2]
         except:
-            print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+            print("error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics")
 
 
 class Freq2_harmonics_amplitude_3(Base):
@@ -1160,7 +1161,7 @@ class Freq2_harmonics_amplitude_3(Base):
         try:
             return A[1][3]
         except:
-            print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+            print("error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics")
 
 
 class Freq3_harmonics_amplitude_0(Base):
@@ -1172,7 +1173,7 @@ class Freq3_harmonics_amplitude_0(Base):
         try:
             return A[2][0]
         except:
-            print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+            print("error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics")
 
 
 class Freq3_harmonics_amplitude_1(Base):
@@ -1184,7 +1185,7 @@ class Freq3_harmonics_amplitude_1(Base):
         try:
             return A[2][1]
         except:
-            print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+            print("error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics")
 
 
 class Freq3_harmonics_amplitude_2(Base):
@@ -1196,7 +1197,7 @@ class Freq3_harmonics_amplitude_2(Base):
         try:
             return A[2][2]
         except:
-            print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+            print("error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics")
 
 
 class Freq3_harmonics_amplitude_3(Base):
@@ -1208,7 +1209,7 @@ class Freq3_harmonics_amplitude_3(Base):
         try:
             return A[2][3]
         except:
-            print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+            print("error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics")
 
 
 class Freq1_harmonics_rel_phase_0(Base):
@@ -1220,7 +1221,7 @@ class Freq1_harmonics_rel_phase_0(Base):
         try:
             return scaledPH[0][0]
         except:
-            print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+            print("error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics")
 
 
 class Freq1_harmonics_rel_phase_1(Base):
@@ -1232,7 +1233,7 @@ class Freq1_harmonics_rel_phase_1(Base):
         try:
             return scaledPH[0][1]
         except:
-            print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+            print("error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics")
 
 
 class Freq1_harmonics_rel_phase_2(Base):
@@ -1244,7 +1245,7 @@ class Freq1_harmonics_rel_phase_2(Base):
         try:
             return scaledPH[0][2]
         except:
-            print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+            print("error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics")
 
 
 class Freq1_harmonics_rel_phase_3(Base):
@@ -1256,7 +1257,7 @@ class Freq1_harmonics_rel_phase_3(Base):
         try:
             return scaledPH[0][3]
         except:
-            print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+            print("error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics")
 
 
 class Freq2_harmonics_rel_phase_0(Base):
@@ -1269,7 +1270,7 @@ class Freq2_harmonics_rel_phase_0(Base):
         try:
             return scaledPH[1][0]
         except:
-            print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+            print("error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics")
 
 
 class Freq2_harmonics_rel_phase_1(Base):
@@ -1281,7 +1282,7 @@ class Freq2_harmonics_rel_phase_1(Base):
         try:
             return scaledPH[1][1]
         except:
-            print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+            print("error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics")
 
 
 class Freq2_harmonics_rel_phase_2(Base):
@@ -1293,7 +1294,7 @@ class Freq2_harmonics_rel_phase_2(Base):
         try:
             return scaledPH[1][2]
         except:
-            print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+            print("error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics")
 
 
 class Freq2_harmonics_rel_phase_3(Base):
@@ -1305,7 +1306,7 @@ class Freq2_harmonics_rel_phase_3(Base):
         try:
             return scaledPH[1][3]
         except:
-            print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+            print("error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics")
 
 
 class Freq3_harmonics_rel_phase_0(Base):
@@ -1317,7 +1318,7 @@ class Freq3_harmonics_rel_phase_0(Base):
         try:
             return scaledPH[2][0]
         except:
-            print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+            print("error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics")
 
 
 class Freq3_harmonics_rel_phase_1(Base):
@@ -1329,7 +1330,7 @@ class Freq3_harmonics_rel_phase_1(Base):
         try:
             return scaledPH[2][1]
         except:
-            print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+            print("error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics")
 
 
 class Freq3_harmonics_rel_phase_2(Base):
@@ -1341,7 +1342,7 @@ class Freq3_harmonics_rel_phase_2(Base):
         try:
             return scaledPH[2][2]
         except:
-            print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+            print("error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics")
 
 
 class Freq3_harmonics_rel_phase_3(Base):
@@ -1353,7 +1354,7 @@ class Freq3_harmonics_rel_phase_3(Base):
         try:
             return scaledPH[2][3]
         except:
-            print "error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics"
+            print("error: please run Freq1_harmonics_amplitude_0 first to generate values for all harmonics")
 
 class Gskew(Base):
     """Median-based measure of the skew"""
@@ -1366,7 +1367,7 @@ class Gskew(Base):
         median_mag = np.median(magnitude)
         F_3_value = np.percentile(magnitude, 3)
         F_97_value = np.percentile(magnitude, 97)
-        
-        return (np.median(magnitude[magnitude <= F_3_value]) 
-                + np.median(magnitude[magnitude >= F_97_value]) 
+
+        return (np.median(magnitude[magnitude <= F_3_value])
+                + np.median(magnitude[magnitude >= F_97_value])
                 - 2*median_mag)
